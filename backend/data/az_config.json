@@ -1,0 +1,83 @@
+{
+  "francecentral": {
+    "name": "France Central",
+    "cloud_provider": "azure",
+    "location": "Paris, France",
+    "carbon_gco2_kwh": 56.0,
+    "carbon_index": "low",
+    "availability_zones": [
+      {
+        "id": "fr-central-1",
+        "name": "France Central AZ-1",
+        "temp_c": 11.0,
+        "wind_kmh": 15.4
+      },
+      {
+        "id": "fr-central-2",
+        "name": "France Central AZ-2",
+        "temp_c": 10.8,
+        "wind_kmh": 13.5
+      },
+      {
+        "id": "fr-central-3",
+        "name": "France Central AZ-3",
+        "temp_c": 10.7,
+        "wind_kmh": 12.4
+      }
+    ]
+  },
+  "westeurope": {
+    "name": "West Europe",
+    "cloud_provider": "azure",
+    "location": "Amsterdam, Netherlands",
+    "carbon_gco2_kwh": 328.0,
+    "carbon_index": "moderate",
+    "availability_zones": [
+      {
+        "id": "we-1",
+        "name": "West Europe AZ-1",
+        "temp_c": 9.0,
+        "wind_kmh": 29.2
+      },
+      {
+        "id": "we-2",
+        "name": "West Europe AZ-2",
+        "temp_c": 8.4,
+        "wind_kmh": 28.1
+      },
+      {
+        "id": "we-3",
+        "name": "West Europe AZ-3",
+        "temp_c": 8.1,
+        "wind_kmh": 29.9
+      }
+    ]
+  },
+  "uksouth": {
+    "name": "UK South",
+    "cloud_provider": "azure",
+    "location": "London, UK",
+    "carbon_gco2_kwh": 55.0,
+    "carbon_index": "low",
+    "availability_zones": [
+      {
+        "id": "uk-south-1",
+        "name": "UK South AZ-1",
+        "temp_c": 9.2,
+        "wind_kmh": 14.3
+      },
+      {
+        "id": "uk-south-2",
+        "name": "UK South AZ-2",
+        "temp_c": 9.4,
+        "wind_kmh": 12.8
+      },
+      {
+        "id": "uk-south-3",
+        "name": "UK South AZ-3",
+        "temp_c": 9.5,
+        "wind_kmh": 13.6
+      }
+    ]
+  }
+}
