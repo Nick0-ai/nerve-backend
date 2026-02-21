@@ -1,13 +1,16 @@
 """
-NERVE — API Backend
-FastAPI server pour l'orchestrateur FinOps/GreenOps.
+NERVE — API Backend (LIVE)
+All data scraped in real-time from Azure, Open-Meteo, Carbon Intensity UK.
 
 Usage:
+    cp .env.example .env  # configure LLM API key
     uvicorn main:app --reload --port 8000
 """
 
+import logging
 from contextlib import asynccontextmanager
 
+from dotenv import load_dotenv
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -19,34 +22,37 @@ from routes import (
     dashboard_router,
 )
 from ws import ws_router
+from engine.scraper import start_scraper, stop_scraper, get_scraper_status
 
+# Load .env for LLM API keys
+load_dotenv()
 
-# ── Lifespan (startup / shutdown) ────────────────────────────────────
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(name)s] %(levelname)s: %(message)s",
+)
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Startup : precharger les donnees
-    from engine.scraper import _ensure_cache
-    _ensure_cache()
-    print("NERVE engine started — cache loaded")
+    # Startup: launch live scraper
+    await start_scraper()
+    logging.info("NERVE engine started — live scraper running")
     yield
     # Shutdown
-    print("NERVE engine stopped")
+    await stop_scraper()
+    logging.info("NERVE engine stopped")
 
-
-# ── App ──────────────────────────────────────────────────────────────
 
 app = FastAPI(
-    title="NERVE API",
+    title="NERVE API (LIVE)",
     description=(
-        "Orchestrateur Cloud FinOps/GreenOps — "
-        "AZ-Hopping, Time-Shifting, Smart Checkpointing"
+        "Cloud FinOps/GreenOps Orchestrator — "
+        "All data scraped in real-time from Azure, Open-Meteo, Carbon Intensity UK."
     ),
-    version="1.0.0",
+    version="2.0.0",
     lifespan=lifespan,
 )
-
-# ── CORS (William peut fetch depuis localhost:8080) ──────────────────
 
 app.add_middleware(
     CORSMiddleware,
@@ -56,8 +62,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# ── Routes ───────────────────────────────────────────────────────────
-
 app.include_router(region_router)
 app.include_router(simulate_router)
 app.include_router(checkpoint_router)
@@ -66,8 +70,11 @@ app.include_router(dashboard_router)
 app.include_router(ws_router)
 
 
-# ── Health check ─────────────────────────────────────────────────────
-
 @app.get("/health", tags=["System"])
 async def health():
-    return {"status": "ok", "engine": "NERVE v1.0.0"}
+    status = get_scraper_status()
+    return {
+        "status": "ok",
+        "engine": "NERVE v2.0.0 (LIVE)",
+        "scraper": status,
+    }
