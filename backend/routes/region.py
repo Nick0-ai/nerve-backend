@@ -66,31 +66,55 @@ async def regions_summary():
 async def price_curve(
     region_id: str = Query("francecentral", example="francecentral"),
 ):
-    """Return live 24h spot price curve using real scraped data + intra-day patterns."""
+    """
+    24h spot price curve. Uses REAL price history when available.
+    Falls back to model-based curve from live average price.
+    """
+    from engine.scraper import get_price_history
     from engine.timeshifter import _build_live_price_curve
+
     cache = get_cache()
     gpus = cache.get("gpu_prices", {}).get(region_id, [])
 
-    # Find cheapest compute GPU (NC/ND series — not NV visualization)
     compute_gpus = [g for g in gpus if g["sku"].startswith("Standard_NC") or g["sku"].startswith("Standard_ND")]
     if not compute_gpus:
         compute_gpus = gpus
     cheapest = min(compute_gpus, key=lambda g: g["spot_price_usd_hr"]) if compute_gpus else None
     ondemand = cheapest["ondemand_price_usd_hr"] if cheapest else 3.58
 
-    price_curve = _build_live_price_curve(region_id)
+    history = get_price_history(region_id)
+    model_curve = _build_live_price_curve(region_id)
 
-    data = []
-    for h in range(24):
-        data.append({
-            "hour": f"{h:02d}h",
-            "spot": round(price_curve.get(h, 0.5), 4),
-            "ondemand": round(ondemand, 4),
-        })
+    if len(history) >= 3:
+        hour_data: dict[int, list[float]] = {}
+        for entry in history:
+            h = entry.get("hour", 0)
+            if h not in hour_data:
+                hour_data[h] = []
+            hour_data[h].append(entry["avg_compute_spot"])
+
+        data = []
+        for h in range(24):
+            if h in hour_data:
+                spot = round(sum(hour_data[h]) / len(hour_data[h]), 4)
+                data.append({"hour": f"{h:02d}h", "spot": spot, "ondemand": round(ondemand, 4), "source": "scraped"})
+            else:
+                data.append({"hour": f"{h:02d}h", "spot": round(model_curve.get(h, 0.5), 4), "ondemand": round(ondemand, 4), "source": "model"})
+
+        scraped_count = sum(1 for d in data if d["source"] == "scraped")
+        source = f"history ({scraped_count}/24h real)"
+    else:
+        data = [
+            {"hour": f"{h:02d}h", "spot": round(model_curve.get(h, 0.5), 4), "ondemand": round(ondemand, 4), "source": "model"}
+            for h in range(24)
+        ]
+        source = f"model (building history: {len(history)} points)"
 
     return {
         "region_id": region_id,
         "gpu_name": cheapest["gpu_name"] if cheapest else "N/A",
         "sku": cheapest["sku"] if cheapest else "N/A",
+        "source": source,
+        "history_points": len(history),
         "data": data,
     }

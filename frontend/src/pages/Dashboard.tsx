@@ -5,6 +5,7 @@ import Card from '../components/Card'
 import WorldMap from '../components/WorldMap'
 import PriceChart from '../components/PriceChart'
 import EventFeed from '../components/EventFeed'
+import AskNerve from '../components/AskNerve'
 
 export default function Dashboard() {
   const [stats, setStats] = useState<DashboardStats | null>(null)
@@ -50,6 +51,11 @@ export default function Dashboard() {
           <EventFeed />
         </Card>
       </div>
+
+      {/* NERVE AI */}
+      <Card title="Ask NERVE AI" subtitle="LLM analysis of live infrastructure data">
+        <AskNerve />
+      </Card>
 
       {/* Price Chart */}
       <Card title="Spot Price Curve (24h)" subtitle="Live scraped prices · France Central · On-Demand in red">

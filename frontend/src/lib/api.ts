@@ -193,4 +193,8 @@ export const api = {
   regionsSummary: () => request<RegionSummary[]>('/regions/summary'),
   priceCurve: (regionId: string) => request<PriceCurve>(`/prices/curve?region_id=${regionId}`),
   health: () => request<{ status: string; engine: string }>('/health'),
+  llmAnalyze: (question: string) =>
+    request<{ question: string; response: Record<string, unknown>; data_source: string }>(
+      '/llm/analyze', { method: 'POST', body: JSON.stringify({ question }) }
+    ),
 }
