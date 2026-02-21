@@ -1,7 +1,7 @@
 """
 NERVE Engine — Real LLM Integration
 Envoie le JSON scrappe live + preprompt au LLM pour decision.
-Supporte : Anthropic Claude, OpenAI GPT.
+Supporte : Google Gemini, Anthropic Claude, OpenAI GPT.
 """
 
 from __future__ import annotations
@@ -34,7 +34,7 @@ def _get_provider() -> str:
 
 
 def _get_model() -> str:
-    defaults = {"anthropic": "claude-sonnet-4-20250514", "openai": "gpt-4o-mini"}
+    defaults = {"gemini": "gemini-2.0-flash", "anthropic": "claude-sonnet-4-20250514", "openai": "gpt-4o-mini"}
     return os.getenv("NERVE_LLM_MODEL", defaults.get(_get_provider(), ""))
 
 
@@ -45,6 +45,22 @@ async def call_nerve_llm(scraped_json: str) -> dict:
     full_prompt = preprompt + "\n" + scraped_json
 
     log.info(f"LLM call — provider={provider}, prompt_len={len(full_prompt)}")
+
+    if provider == "gemini":
+        api_key = os.getenv("GEMINI_API_KEY")
+        if not api_key:
+            return {"status": "error", "message": "GEMINI_API_KEY not set in .env"}
+        try:
+            from google import genai
+            client = genai.Client(api_key=api_key)
+            response = client.models.generate_content(
+                model=_get_model(),
+                contents=full_prompt,
+            )
+            return _extract_json(response.text)
+        except Exception as e:
+            log.error(f"Gemini API error: {e}")
+            return {"status": "error", "message": str(e)}
 
     if provider == "anthropic":
         api_key = os.getenv("ANTHROPIC_API_KEY")
@@ -86,7 +102,7 @@ async def call_nerve_llm(scraped_json: str) -> dict:
 
     return {
         "status": "no_provider",
-        "message": f"Set NERVE_LLM_PROVIDER=anthropic|openai in .env",
+        "message": f"Set NERVE_LLM_PROVIDER=gemini|anthropic|openai in .env",
         "prompt_length": len(full_prompt),
     }
 
