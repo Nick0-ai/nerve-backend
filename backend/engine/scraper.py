@@ -83,6 +83,7 @@ _cache: dict[str, Any] = {
     "carbon": {},          # region_id -> dict
     "scrape_count": 0,
     "errors": [],
+    "price_history": {},   # region_id -> list[{timestamp, avg_spot, min_spot, max_spot}]
 }
 
 _event_listeners: list[Callable] = []
@@ -286,17 +287,115 @@ async def _scrape_weather(client: httpx.AsyncClient, region_id: str) -> dict:
         return {"current_temp_c": 10.0, "current_wind_kmh": 15.0, "current_solar_wm2": 0.0, "hourly": []}
 
 
-# ── Carbon Intensity API ─────────────────────────────────────────────
+# ── Carbon Intensity — Physics-Based Model ───────────────────────────
+#
+# Grid composition (source: IEA, RTE, CBS, BEIS):
+#   France: ~70% nuclear, ~12% hydro, ~10% wind/solar, ~8% gas
+#   Netherlands: ~52% gas, ~14% wind, ~7% solar, ~5% coal, ~22% other
+#   UK: uses live API (carbonintensity.org.uk)
+#
+# Emission factors (gCO2/kWh per source):
+#   Nuclear: 12, Hydro: 24, Wind: 11, Solar: 45, Gas: 490, Coal: 820
+#
+# Model: when wind/solar are high (from live weather), renewables displace
+# gas/coal → carbon drops. We compute this in real-time from Open-Meteo data.
 
-CARBON_DEFAULTS = {
-    "francecentral": {"gco2_kwh": 56.0, "index": "low", "source": "RTE (nuclear-dominated grid)"},
-    "westeurope": {"gco2_kwh": 328.0, "index": "moderate", "source": "NL gas-dominated grid"},
-    "uksouth": {"gco2_kwh": 120.0, "index": "low", "source": "Carbon Intensity UK API"},
+GRID_MIX = {
+    "francecentral": {
+        "nuclear": 0.70,   # constant baseload
+        "hydro": 0.12,     # constant
+        "wind_max": 0.10,  # variable — scaled by live wind
+        "solar_max": 0.05, # variable — scaled by live solar
+        "gas_base": 0.08,  # fills the gap
+    },
+    "westeurope": {
+        "nuclear": 0.03,   # Borssele only
+        "hydro": 0.00,
+        "wind_max": 0.22,  # NL offshore + onshore
+        "solar_max": 0.12, # NL solar farms
+        "gas_base": 0.52,  # dominant
+        "coal_base": 0.05,
+    },
+}
+
+EMISSION_FACTORS = {
+    "nuclear": 12, "hydro": 24, "wind": 11, "solar": 45,
+    "gas": 490, "coal": 820, "other": 300,
 }
 
 
+def _estimate_carbon_from_weather(region_id: str, wind_kmh: float, solar_wm2: float) -> dict:
+    """
+    Physics-based carbon intensity estimation using LIVE weather.
+    Higher wind → more wind generation → less gas → lower carbon.
+    Higher solar radiation → more solar → less gas → lower carbon.
+    """
+    mix = GRID_MIX.get(region_id)
+    if not mix:
+        return {"gco2_kwh": 100.0, "index": "low", "source": "default"}
+
+    # Wind capacity factor: 0-1 based on live wind speed
+    # Typical rated speed ~45 km/h, cut-in ~12 km/h
+    wind_cf = min(max((wind_kmh - 5) / 40.0, 0.0), 1.0)
+    wind_share = mix.get("wind_max", 0) * wind_cf
+
+    # Solar capacity factor: 0-1 based on live solar radiation
+    # Max direct radiation ~1000 W/m2
+    solar_cf = min(max(solar_wm2 / 800.0, 0.0), 1.0)
+    solar_share = mix.get("solar_max", 0) * solar_cf
+
+    # Fixed sources
+    nuclear_share = mix.get("nuclear", 0)
+    hydro_share = mix.get("hydro", 0)
+    coal_share = mix.get("coal_base", 0)
+
+    # Gas fills the remaining demand
+    total_clean = nuclear_share + hydro_share + wind_share + solar_share
+    gas_share = max(1.0 - total_clean - coal_share, mix.get("gas_base", 0) * 0.5)
+
+    # Weighted average carbon intensity
+    gco2 = (
+        nuclear_share * EMISSION_FACTORS["nuclear"]
+        + hydro_share * EMISSION_FACTORS["hydro"]
+        + wind_share * EMISSION_FACTORS["wind"]
+        + solar_share * EMISSION_FACTORS["solar"]
+        + gas_share * EMISSION_FACTORS["gas"]
+        + coal_share * EMISSION_FACTORS["coal"]
+    )
+
+    gco2 = round(gco2, 1)
+
+    if gco2 < 80:
+        index = "very low"
+    elif gco2 < 150:
+        index = "low"
+    elif gco2 < 250:
+        index = "moderate"
+    elif gco2 < 400:
+        index = "high"
+    else:
+        index = "very high"
+
+    return {
+        "gco2_kwh": gco2,
+        "index": index,
+        "source": f"NERVE weather-based model (wind={wind_kmh:.0f}km/h, solar={solar_wm2:.0f}W/m2)",
+        "model": {
+            "wind_cf": round(wind_cf, 2),
+            "solar_cf": round(solar_cf, 2),
+            "wind_share_pct": round(wind_share * 100, 1),
+            "solar_share_pct": round(solar_share * 100, 1),
+            "gas_share_pct": round(gas_share * 100, 1),
+        },
+    }
+
+
 async def _scrape_carbon(client: httpx.AsyncClient, region_id: str) -> dict:
-    """Fetch real carbon intensity. UK has a real API, others use known grid averages."""
+    """
+    Real carbon intensity:
+    - UK: live API from carbonintensity.org.uk
+    - France/NL: physics model using LIVE weather data from Open-Meteo
+    """
     if region_id == "uksouth":
         try:
             resp = await client.get(
@@ -321,14 +420,14 @@ async def _scrape_carbon(client: httpx.AsyncClient, region_id: str) -> dict:
             log.warning(f"Carbon UK scrape failed: {e}")
             _cache["errors"].append(f"Carbon UK: {e}")
 
-    # France: use RTE known average (API requires auth token)
-    # Netherlands: use known average
-    default = CARBON_DEFAULTS.get(region_id, CARBON_DEFAULTS["francecentral"])
-    return {
-        "gco2_kwh": default["gco2_kwh"],
-        "index": default["index"],
-        "source": default["source"],
-    }
+    # France / Netherlands: real-time estimation from live weather
+    weather = _cache.get("weather", {}).get(region_id, {})
+    wind = weather.get("current_wind_kmh", 15.0)
+    solar = weather.get("current_solar_wm2", 0.0)
+
+    result = _estimate_carbon_from_weather(region_id, wind, solar)
+    log.info(f"Carbon {region_id}: {result['gco2_kwh']} gCO2/kWh ({result['index']}) — wind={wind:.0f}km/h, solar={solar:.0f}W/m2")
+    return result
 
 
 # ── Main scrape loop ─────────────────────────────────────────────────
@@ -359,10 +458,44 @@ async def _scrape_all():
             # Emit price change events
             _detect_price_changes(region_id, old_prices, gpus)
 
+            # Record price history for real 24h curve
+            _record_price_history(region_id, gpus)
+
     _cache["last_scrape"] = datetime.now(timezone.utc).isoformat()
     _cache["scrape_count"] += 1
     total_gpus = sum(len(v) for v in _cache["gpu_prices"].values())
     log.info(f"Scrape #{_cache['scrape_count']} complete — {total_gpus} GPUs across {len(REGIONS)} regions")
+
+
+MAX_HISTORY_POINTS = 1440  # 24h at 1 scrape/min
+
+
+def _record_price_history(region_id: str, gpus: list[dict]):
+    """Store real scraped price snapshot for building 24h curves."""
+    if not gpus:
+        return
+    prices = [g["spot_price_usd_hr"] for g in gpus]
+    compute_gpus = [g for g in gpus if g["sku"].startswith("Standard_NC") or g["sku"].startswith("Standard_ND")]
+    compute_prices = [g["spot_price_usd_hr"] for g in compute_gpus] if compute_gpus else prices
+
+    entry = {
+        "timestamp": datetime.now(timezone.utc).isoformat(),
+        "hour": datetime.now(timezone.utc).hour,
+        "avg_spot": round(sum(prices) / len(prices), 6),
+        "min_spot": round(min(prices), 6),
+        "max_spot": round(max(prices), 6),
+        "avg_compute_spot": round(sum(compute_prices) / len(compute_prices), 6),
+        "gpu_count": len(gpus),
+    }
+
+    if region_id not in _cache["price_history"]:
+        _cache["price_history"][region_id] = []
+
+    _cache["price_history"][region_id].append(entry)
+
+    # Keep only last 24h of data
+    if len(_cache["price_history"][region_id]) > MAX_HISTORY_POINTS:
+        _cache["price_history"][region_id] = _cache["price_history"][region_id][-MAX_HISTORY_POINTS:]
 
 
 def _detect_price_changes(region_id: str, old: list[dict], new: list[dict]):
@@ -498,11 +631,18 @@ def get_live_weather(region_id: str) -> dict:
     return _cache.get("weather", {}).get(region_id, {})
 
 
+def get_price_history(region_id: str) -> list[dict]:
+    """Return real price history for building 24h curves."""
+    return _cache.get("price_history", {}).get(region_id, [])
+
+
 def get_scraper_status() -> dict:
+    history_counts = {r: len(h) for r, h in _cache.get("price_history", {}).items()}
     return {
         "last_scrape": _cache["last_scrape"],
         "scrape_count": _cache["scrape_count"],
         "total_gpus": sum(len(v) for v in _cache["gpu_prices"].values()),
         "regions": list(_cache["gpu_prices"].keys()),
+        "price_history_points": history_counts,
         "errors": _cache["errors"][-10:],
     }
