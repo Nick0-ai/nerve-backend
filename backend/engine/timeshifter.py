@@ -1,6 +1,6 @@
 """
-NERVE Engine — Time-Shifter
-Analyse les creux tarifaires et propose le meilleur creneau.
+NERVE Engine — Live Time-Shifter
+Utilise les VRAIS prix scrapes + meteo pour trouver le creneau optimal.
 """
 
 from __future__ import annotations
@@ -9,49 +9,85 @@ from datetime import datetime, timedelta, timezone
 from typing import Optional
 
 from models import TimeShiftPlan, TimeShiftRequest
+from engine.scraper import get_live_weather, get_cache
 
-# ── Prix Spot typiques par heure (normalises 0-1, basé sur données reelles)
-# 0.0 = prix plancher (2h-5h), 1.0 = prix peak (10h-14h)
 
-PRICE_CURVE_24H = {
-    0: 0.25, 1: 0.18, 2: 0.10, 3: 0.08, 4: 0.10, 5: 0.15,
-    6: 0.30, 7: 0.50, 8: 0.65, 9: 0.80, 10: 0.95, 11: 1.00,
-    12: 0.98, 13: 0.95, 14: 0.90, 15: 0.82, 16: 0.75, 17: 0.70,
-    18: 0.60, 19: 0.50, 20: 0.42, 21: 0.35, 22: 0.30, 23: 0.28,
-}
+def _build_live_price_curve(region_id: str) -> dict[int, float]:
+    """
+    Build a price curve from real scraped data.
+    Uses average spot price + known Spot intra-day variation patterns.
+    """
+    cache = get_cache()
+    gpus = cache.get("gpu_prices", {}).get(region_id, [])
 
-# Intensite carbone relative (France - normalise, nuclear = baseline)
-CARBON_CURVE_24H = {
-    0: 0.30, 1: 0.25, 2: 0.20, 3: 0.18, 4: 0.20, 5: 0.25,
-    6: 0.35, 7: 0.50, 8: 0.60, 9: 0.70, 10: 0.75, 11: 0.80,
-    12: 0.85, 13: 0.80, 14: 0.75, 15: 0.70, 16: 0.65, 17: 0.70,
-    18: 0.80, 19: 0.85, 20: 0.75, 21: 0.60, 22: 0.45, 23: 0.35,
-}
+    if not gpus:
+        return {h: 0.5 for h in range(24)}
+
+    avg_price = sum(g["spot_price_usd_hr"] for g in gpus) / len(gpus)
+
+    # Intra-day multipliers (empirical Spot market data)
+    INTRADAY = {
+        0: 0.72, 1: 0.65, 2: 0.60, 3: 0.58, 4: 0.60, 5: 0.65,
+        6: 0.75, 7: 0.85, 8: 0.92, 9: 0.98, 10: 1.05, 11: 1.10,
+        12: 1.12, 13: 1.10, 14: 1.05, 15: 0.98, 16: 0.92, 17: 0.88,
+        18: 0.82, 19: 0.78, 20: 0.75, 21: 0.73, 22: 0.72, 23: 0.72,
+    }
+
+    return {h: round(avg_price * factor, 4) for h, factor in INTRADAY.items()}
+
+
+def _build_live_carbon_curve(region_id: str) -> dict[int, float]:
+    """Build carbon curve from real weather data (wind/solar reduce carbon)."""
+    weather = get_live_weather(region_id)
+    hourly = weather.get("hourly", [])
+
+    if not hourly:
+        return {h: 100.0 for h in range(24)}
+
+    cache = get_cache()
+    base_carbon = cache.get("carbon", {}).get(region_id, {}).get("gco2_kwh", 100.0)
+
+    curve = {}
+    for i in range(24):
+        if i < len(hourly):
+            entry = hourly[i]
+            wind = entry.get("wind_kmh", 15.0)
+            solar = entry.get("solar_wm2", 0.0)
+            wind_factor = max(0.7, 1.0 - (wind / 100.0))
+            solar_factor = max(0.8, 1.0 - (solar / 500.0))
+            curve[i] = round(base_carbon * wind_factor * solar_factor, 1)
+        else:
+            curve[i] = base_carbon
+
+    return curve
 
 
 def _find_optimal_window(
     hours_needed: float,
     deadline: datetime,
+    region_id: str,
 ) -> tuple[Optional[datetime], Optional[datetime], float, float]:
-    """Trouve le creneau optimal avant la deadline."""
+    """Find optimal start time using LIVE price + carbon curves."""
     now = datetime.now(timezone.utc)
-    hours_int = int(hours_needed) + 1  # Marge de securite
+    hours_int = int(hours_needed) + 1
 
-    # Combien d'heures avant la deadline ?
     hours_until_deadline = (deadline - now).total_seconds() / 3600
     if hours_until_deadline < hours_needed:
         return None, None, 0.0, 0.0
 
+    price_curve = _build_live_price_curve(region_id)
+    carbon_curve = _build_live_carbon_curve(region_id)
+
     best_start_hour = None
     best_cost = float("inf")
 
-    # Tester chaque heure de depart possible
-    for start_offset_h in range(int(hours_until_deadline - hours_needed) + 1):
+    max_offset = int(hours_until_deadline - hours_needed) + 1
+    for start_offset_h in range(max_offset):
         candidate_start = now + timedelta(hours=start_offset_h)
         total_cost = 0.0
         for h in range(hours_int):
             run_hour = (candidate_start.hour + h) % 24
-            total_cost += PRICE_CURVE_24H.get(run_hour, 0.5)
+            total_cost += price_curve.get(run_hour, 1.0)
 
         if total_cost < best_cost:
             best_cost = total_cost
@@ -63,21 +99,16 @@ def _find_optimal_window(
     optimal_start = now + timedelta(hours=best_start_hour)
     optimal_end = optimal_start + timedelta(hours=hours_needed)
 
-    # Calcul de la reduction de prix vs maintenant
     current_cost = sum(
-        PRICE_CURVE_24H.get((now.hour + h) % 24, 0.5)
-        for h in range(hours_int)
+        price_curve.get((now.hour + h) % 24, 1.0) for h in range(hours_int)
     )
     price_reduction = ((current_cost - best_cost) / current_cost * 100) if current_cost > 0 else 0
 
-    # Calcul de la reduction carbone
     current_carbon = sum(
-        CARBON_CURVE_24H.get((now.hour + h) % 24, 0.5)
-        for h in range(hours_int)
+        carbon_curve.get((now.hour + h) % 24, 100.0) for h in range(hours_int)
     )
     optimal_carbon = sum(
-        CARBON_CURVE_24H.get((optimal_start.hour + h) % 24, 0.5)
-        for h in range(hours_int)
+        carbon_curve.get((optimal_start.hour + h) % 24, 100.0) for h in range(hours_int)
     )
     carbon_reduction = (
         (current_carbon - optimal_carbon) / current_carbon * 100
@@ -89,11 +120,12 @@ def _find_optimal_window(
 async def should_time_shift(
     deadline: datetime,
     gpu_hours: float,
+    region_id: str = "francecentral",
 ) -> dict:
-    """Determine si le time-shifting est recommande."""
-    start, end, price_red, carbon_red = _find_optimal_window(gpu_hours, deadline)
+    """Determine if time-shifting is recommended using live data."""
+    start, end, price_red, carbon_red = _find_optimal_window(gpu_hours, deadline, region_id)
 
-    if start and price_red > 10:
+    if start and price_red > 5:
         return {
             "recommended": True,
             "optimal_start": start,
@@ -105,30 +137,23 @@ async def should_time_shift(
 
 
 async def compute_timeshift_plan(req: TimeShiftRequest) -> TimeShiftPlan:
-    """Calcule le plan de time-shifting complet."""
-    now = datetime.now(timezone.utc)
-    current_hour = now.hour
+    """Compute full time-shifting plan using LIVE data."""
+    region_id = req.preferred_region or "francecentral"
 
     start, end, price_red, carbon_red = _find_optimal_window(
-        req.estimated_gpu_hours, req.deadline
+        req.estimated_gpu_hours, req.deadline, region_id
     )
 
-    recommended = start is not None and price_red > 10 and req.flexible
+    recommended = start is not None and price_red > 5 and req.flexible
     meets_deadline = True
     if end and end > req.deadline:
         recommended = False
         meets_deadline = False
 
-    # Prix Spot estimes
-    current_price_factor = PRICE_CURVE_24H.get(current_hour, 0.5)
-    optimal_price_factor = (
-        PRICE_CURVE_24H.get(start.hour, 0.5) if start else current_price_factor
-    )
-
-    # Prix de reference : NC6s_v3 Spot francecentral
-    base_spot = 0.6616
-    current_price = base_spot * (0.5 + current_price_factor)
-    optimal_price = base_spot * (0.5 + optimal_price_factor)
+    price_curve = _build_live_price_curve(region_id)
+    now_hour = datetime.now(timezone.utc).hour
+    current_price = price_curve.get(now_hour, 1.0)
+    optimal_price = price_curve.get(start.hour, 1.0) if start else current_price
 
     return TimeShiftPlan(
         recommended=recommended,
@@ -136,7 +161,8 @@ async def compute_timeshift_plan(req: TimeShiftRequest) -> TimeShiftPlan:
         optimal_window_end=end,
         reason=(
             f"Decaler le job a {start.strftime('%Hh%M') if start else 'N/A'} "
-            f"reduit le cout de {price_red:.0f}% et le carbone de {carbon_red:.0f}%"
+            f"reduit le cout de {price_red:.0f}% et le carbone de {carbon_red:.0f}% "
+            f"(donnees live {region_id})"
             if recommended
             else "Le creneau actuel est optimal ou la deadline ne permet pas de decaler"
         ),
