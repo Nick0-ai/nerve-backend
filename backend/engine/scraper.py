@@ -91,6 +91,7 @@ _cache: dict[str, Any] = {
 _event_listeners: list[Callable] = []
 
 _DATA_DIR = Path(__file__).resolve().parent.parent / "data"
+_VISION_DIR = Path(__file__).resolve().parent.parent.parent / "vision"
 
 
 def on_event(fn: Callable):
@@ -486,6 +487,158 @@ async def _scrape_carbon(client: httpx.AsyncClient, region_id: str) -> dict:
     return result
 
 
+# ── Vision JSON export ───────────────────────────────────────────────
+
+_KWH_PER_GPU_HOUR = {
+    "v100": 0.30, "t4": 0.07, "a10": 0.15, "a100": 0.40, "h100": 0.70,
+    "mi25": 0.10, "m60": 0.12,
+}
+
+
+def _export_vision_json():
+    """
+    Export a complete 'vision' JSON file after each scrape cycle.
+    Contains: metadata, job_context, all regions with per-AZ GPU prices,
+    weather hourly, carbon intensity, scoring weights, reference prices.
+    """
+    now = datetime.now(timezone.utc).isoformat()
+
+    regions_data = {}
+    for region_id, cfg in REGIONS.items():
+        gpus_raw = _cache.get("gpu_prices", {}).get(region_id, [])
+        weather = _cache.get("weather", {}).get(region_id, {})
+        carbon = _cache.get("carbon", {}).get(region_id, {})
+
+        # Per-AZ GPU prices
+        az_data = {}
+        for az_cfg in cfg["azs"]:
+            az_id = az_cfg["id"]
+            az_gpus = []
+            for g in gpus_raw:
+                az_spot = _az_price_variation(g["spot_price_usd_hr"], az_id, g["sku"])
+                az_ondemand = g["ondemand_price_usd_hr"]
+                az_savings = round((1 - az_spot / az_ondemand) * 100, 1) if az_ondemand > 0 else g["savings_pct"]
+                base_avail = _estimate_availability(az_spot, g.get("tier", "mid"), spot=az_spot, ondemand=az_ondemand)
+                az_avail = _az_availability_shift(base_avail, az_id)
+                az_gpus.append({
+                    "sku": g["sku"],
+                    "gpu": g["gpu_name"],
+                    "gpu_count": g["gpu_count"],
+                    "vcpus": g["vcpus"],
+                    "ram_gb": g["ram_gb"],
+                    "spot_price_usd_hr": round(az_spot, 4),
+                    "ondemand_price_usd_hr": round(az_ondemand, 4),
+                    "savings_pct": az_savings,
+                    "availability": az_avail,
+                })
+            az_data[az_id] = az_gpus
+
+        # Weather hourly
+        hourly_raw = weather.get("hourly", [])
+        hourly_forecast = [
+            {
+                "hour": h.get("hour", f"{i:02d}:00"),
+                "temp_c": h.get("temp_c", 10.0),
+                "wind_kmh": h.get("wind_kmh", 15.0),
+                "solar_radiation_wm2": h.get("solar_wm2", 0.0),
+            }
+            for i, h in enumerate(hourly_raw)
+        ]
+
+        # Cooling / renewable summary
+        temp = weather.get("current_temp_c", 10.0)
+        wind = weather.get("current_wind_kmh", 15.0)
+        solar = weather.get("current_solar_wm2", 0.0)
+        cooling = "good" if temp < 10 else "moderate" if temp < 18 else "poor"
+        renew = []
+        if wind > 20:
+            renew.append(f"high wind ({wind:.0f} km/h)")
+        elif wind > 10:
+            renew.append(f"moderate wind ({wind:.0f} km/h)")
+        else:
+            renew.append(f"low wind ({wind:.0f} km/h)")
+        if solar > 200:
+            renew.append(f"high solar ({solar:.0f} W/m2)")
+        elif solar > 50:
+            renew.append(f"moderate solar ({solar:.0f} W/m2)")
+        else:
+            renew.append(f"low solar ({solar:.0f} W/m2)")
+
+        regions_data[region_id] = {
+            "cloud_provider": cfg["cloud_provider"],
+            "location": cfg["location"],
+            "coordinates": {"lat": cfg["lat"], "lng": cfg["lng"]},
+            "availability_zones": {
+                az_id: {
+                    "name": next(a["name"] for a in cfg["azs"] if a["id"] == az_id),
+                    "gpu_spot_prices": az_gpus,
+                }
+                for az_id, az_gpus in az_data.items()
+            },
+            "weather": {
+                "source": "open-meteo.com (LIVE)",
+                "current_temp_c": temp,
+                "current_wind_kmh": wind,
+                "current_solar_wm2": solar,
+                "hourly_forecast": hourly_forecast,
+                "cooling_advantage": f"{cooling} - {temp:.1f}°C",
+                "renewable_potential": ", ".join(renew),
+            },
+            "carbon_intensity": {
+                "source": carbon.get("source", "unknown"),
+                "current_gco2_kwh": carbon.get("gco2_kwh", 100),
+                "index": carbon.get("index", "moderate"),
+            },
+        }
+
+    vision = {
+        "metadata": {
+            "scrape_timestamp": now,
+            "version": "2.0",
+            "scrape_count": _cache.get("scrape_count", 0),
+            "sources": [
+                "Azure Retail Prices API (LIVE)",
+                "Open-Meteo API (LIVE)",
+                "Carbon Intensity UK API (LIVE)",
+                "NERVE physics-based carbon model (FR/NL)",
+            ],
+            "target_regions": list(REGIONS.keys()),
+        },
+        "job_context": {
+            "job_type": "llm_fine_tuning",
+            "model": "LLaMA-7B",
+            "estimated_gpu_hours": 24,
+            "checkpoint_interval_min": 30,
+            "min_gpu_memory_gb": 16,
+            "framework": "pytorch",
+        },
+        "regions": regions_data,
+        "scoring_weights": {
+            "w_price": 0.50,
+            "w_carbon": 0.20,
+            "w_availability": 0.15,
+            "w_cooling": 0.10,
+            "w_renewable": 0.05,
+            "formula": "score = w_price * norm_spot + w_carbon * norm_carbon + w_availability * (1-avail) + w_cooling * norm_cooling + w_renewable * (1-renew)",
+        },
+        "reference_prices": {
+            "currency_eur_usd": 0.92,
+            "avg_datacenter_pue": 1.2,
+            "kwh_per_gpu_hour": _KWH_PER_GPU_HOUR,
+        },
+    }
+
+    # Write to both data/ and vision/ directories
+    for output_dir in [_DATA_DIR, _VISION_DIR]:
+        output_dir.mkdir(parents=True, exist_ok=True)
+        out_path = output_dir / "nerve_scraped_data.json"
+        try:
+            out_path.write_text(json.dumps(vision, indent=2, ensure_ascii=False, default=str), encoding="utf-8")
+            log.info(f"Vision JSON exported → {out_path}")
+        except Exception as e:
+            log.warning(f"Failed to export vision JSON to {out_path}: {e}")
+
+
 # ── Main scrape loop ─────────────────────────────────────────────────
 
 _scraper_task: asyncio.Task | None = None
@@ -521,6 +674,12 @@ async def _scrape_all():
     _cache["scrape_count"] += 1
     total_gpus = sum(len(v) for v in _cache["gpu_prices"].values())
     log.info(f"Scrape #{_cache['scrape_count']} complete — {total_gpus} GPUs across {len(REGIONS)} regions")
+
+    # Export vision JSON after each scrape
+    try:
+        _export_vision_json()
+    except Exception as e:
+        log.warning(f"Vision JSON export failed: {e}")
 
 
 MAX_HISTORY_POINTS = 1440  # 24h at 1 scrape/min
