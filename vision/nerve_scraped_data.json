@@ -1,0 +1,2878 @@
+{
+  "metadata": {
+    "scrape_timestamp": "2026-02-21T23:04:29.309586+00:00",
+    "version": "2.0",
+    "scrape_count": 2,
+    "sources": [
+      "Azure Retail Prices API (LIVE)",
+      "Open-Meteo API (LIVE)",
+      "Carbon Intensity UK API (LIVE)",
+      "NERVE physics-based carbon model (FR/NL)"
+    ],
+    "target_regions": [
+      "francecentral",
+      "westeurope",
+      "uksouth"
+    ]
+  },
+  "job_context": {
+    "job_type": "llm_fine_tuning",
+    "model": "LLaMA-7B",
+    "estimated_gpu_hours": 24,
+    "checkpoint_interval_min": 30,
+    "min_gpu_memory_gb": 16,
+    "framework": "pytorch"
+  },
+  "regions": {
+    "francecentral": {
+      "cloud_provider": "azure",
+      "location": "Paris, France",
+      "coordinates": {
+        "lat": 48.8566,
+        "lng": 2.3522
+      },
+      "availability_zones": {
+        "fr-central-1": {
+          "name": "France Central AZ-1",
+          "gpu_spot_prices": [
+            {
+              "sku": "Standard_NC24rs_v3",
+              "gpu": "Tesla V100 (16GB)",
+              "gpu_count": 4,
+              "vcpus": 24,
+              "ram_gb": 448,
+              "spot_price_usd_hr": 3.0338,
+              "ondemand_price_usd_hr": 16.857,
+              "savings_pct": 82.0,
+              "availability": "high"
+            },
+            {
+              "sku": "Standard_NC64as_T4_v3",
+              "gpu": "Tesla T4 (16GB)",
+              "gpu_count": 4,
+              "vcpus": 64,
+              "ram_gb": 440,
+              "spot_price_usd_hr": 1.4824,
+              "ondemand_price_usd_hr": 8.021,
+              "savings_pct": 81.5,
+              "availability": "high"
+            },
+            {
+              "sku": "Standard_NC12s_v3",
+              "gpu": "Tesla V100 (16GB)",
+              "gpu_count": 2,
+              "vcpus": 12,
+              "ram_gb": 224,
+              "spot_price_usd_hr": 1.3298,
+              "ondemand_price_usd_hr": 7.16,
+              "savings_pct": 81.4,
+              "availability": "high"
+            },
+            {
+              "sku": "Standard_NC96ads_A100_v4",
+              "gpu": "A100 (80GB)",
+              "gpu_count": 4,
+              "vcpus": 96,
+              "ram_gb": 880,
+              "spot_price_usd_hr": 3.5258,
+              "ondemand_price_usd_hr": 18.365,
+              "savings_pct": 80.8,
+              "availability": "high"
+            },
+            {
+              "sku": "Standard_NC48ads_A100_v4",
+              "gpu": "A100 (80GB)",
+              "gpu_count": 2,
+              "vcpus": 48,
+              "ram_gb": 440,
+              "spot_price_usd_hr": 1.6947,
+              "ondemand_price_usd_hr": 11.391,
+              "savings_pct": 85.1,
+              "availability": "high"
+            },
+            {
+              "sku": "Standard_NC6s_v3",
+              "gpu": "Tesla V100 (16GB)",
+              "gpu_count": 1,
+              "vcpus": 6,
+              "ram_gb": 112,
+              "spot_price_usd_hr": 0.6564,
+              "ondemand_price_usd_hr": 3.58,
+              "savings_pct": 81.7,
+              "availability": "high"
+            },
+            {
+              "sku": "Standard_NC8as_T4_v3",
+              "gpu": "Tesla T4 (16GB)",
+              "gpu_count": 1,
+              "vcpus": 8,
+              "ram_gb": 56,
+              "spot_price_usd_hr": 0.2554,
+              "ondemand_price_usd_hr": 1.246,
+              "savings_pct": 79.5,
+              "availability": "high"
+            },
+            {
+              "sku": "Standard_NC16as_T4_v3",
+              "gpu": "Tesla T4 (16GB)",
+              "gpu_count": 1,
+              "vcpus": 16,
+              "ram_gb": 110,
+              "spot_price_usd_hr": 0.3959,
+              "ondemand_price_usd_hr": 2.143,
+              "savings_pct": 81.5,
+              "availability": "high"
+            },
+            {
+              "sku": "Standard_NC4as_T4_v3",
+              "gpu": "Tesla T4 (16GB)",
+              "gpu_count": 1,
+              "vcpus": 4,
+              "ram_gb": 28,
+              "spot_price_usd_hr": 0.1779,
+              "ondemand_price_usd_hr": 0.799,
+              "savings_pct": 77.7,
+              "availability": "high"
+            },
+            {
+              "sku": "Standard_NC24s_v3",
+              "gpu": "Tesla V100 (16GB)",
+              "gpu_count": 4,
+              "vcpus": 24,
+              "ram_gb": 448,
+              "spot_price_usd_hr": 2.5458,
+              "ondemand_price_usd_hr": 14.321,
+              "savings_pct": 82.2,
+              "availability": "high"
+            },
+            {
+              "sku": "Standard_NV6ads_A10_v5",
+              "gpu": "A10 (6GB slice)",
+              "gpu_count": 1,
+              "vcpus": 6,
+              "ram_gb": 55,
+              "spot_price_usd_hr": 0.1026,
+              "ondemand_price_usd_hr": 0.843,
+              "savings_pct": 87.8,
+              "availability": "high"
+            },
+            {
+              "sku": "Standard_NV4as_v4",
+              "gpu": "Radeon MI25 (4GB)",
+              "gpu_count": 1,
+              "vcpus": 4,
+              "ram_gb": 14,
+              "spot_price_usd_hr": 0.0518,
+              "ondemand_price_usd_hr": 0.475,
+              "savings_pct": 89.1,
+              "availability": "high"
+            },
+            {
+              "sku": "Standard_NV16as_v4",
+              "gpu": "Radeon MI25 (16GB)",
+              "gpu_count": 1,
+              "vcpus": 16,
+              "ram_gb": 56,
+              "spot_price_usd_hr": 0.2065,
+              "ondemand_price_usd_hr": 1.165,
+              "savings_pct": 82.3,
+              "availability": "high"
+            },
+            {
+              "sku": "Standard_NV12s_v3",
+              "gpu": "Tesla M60 (8GB)",
+              "gpu_count": 1,
+              "vcpus": 12,
+              "ram_gb": 112,
+              "spot_price_usd_hr": 0.2593,
+              "ondemand_price_usd_hr": 1.977,
+              "savings_pct": 86.9,
+              "availability": "high"
+            },
+            {
+              "sku": "Standard_NV32as_v4",
+              "gpu": "Radeon MI25 (32GB)",
+              "gpu_count": 1,
+              "vcpus": 32,
+              "ram_gb": 112,
+              "spot_price_usd_hr": 0.4503,
+              "ondemand_price_usd_hr": 2.33,
+              "savings_pct": 80.7,
+              "availability": "high"
+            },
+            {
+              "sku": "Standard_NV8as_v4",
+              "gpu": "Radeon MI25 (8GB)",
+              "gpu_count": 1,
+              "vcpus": 8,
+              "ram_gb": 28,
+              "spot_price_usd_hr": 0.1086,
+              "ondemand_price_usd_hr": 0.95,
+              "savings_pct": 88.6,
+              "availability": "high"
+            },
+            {
+              "sku": "Standard_NV36ads_A10_v5",
+              "gpu": "A10 (24GB)",
+              "gpu_count": 1,
+              "vcpus": 36,
+              "ram_gb": 440,
+              "spot_price_usd_hr": 0.7684,
+              "ondemand_price_usd_hr": 4.0,
+              "savings_pct": 80.8,
+              "availability": "high"
+            },
+            {
+              "sku": "Standard_NV12ads_A10_v5",
+              "gpu": "A10 (12GB slice)",
+              "gpu_count": 1,
+              "vcpus": 12,
+              "ram_gb": 110,
+              "spot_price_usd_hr": 0.2094,
+              "ondemand_price_usd_hr": 1.135,
+              "savings_pct": 81.5,
+              "availability": "high"
+            },
+            {
+              "sku": "Standard_NV18ads_A10_v5",
+              "gpu": "A10 (18GB slice)",
+              "gpu_count": 1,
+              "vcpus": 18,
+              "ram_gb": 220,
+              "spot_price_usd_hr": 0.3516,
+              "ondemand_price_usd_hr": 2.828,
+              "savings_pct": 87.6,
+              "availability": "high"
+            },
+            {
+              "sku": "Standard_NV24s_v3",
+              "gpu": "Tesla M60 (16GB)",
+              "gpu_count": 2,
+              "vcpus": 24,
+              "ram_gb": 224,
+              "spot_price_usd_hr": 0.5061,
+              "ondemand_price_usd_hr": 3.954,
+              "savings_pct": 87.2,
+              "availability": "high"
+            },
+            {
+              "sku": "Standard_NV48s_v3",
+              "gpu": "Tesla M60 (32GB)",
+              "gpu_count": 4,
+              "vcpus": 48,
+              "ram_gb": 448,
+              "spot_price_usd_hr": 1.0258,
+              "ondemand_price_usd_hr": 5.7,
+              "savings_pct": 82.0,
+              "availability": "high"
+            }
+          ]
+        },
+        "fr-central-2": {
+          "name": "France Central AZ-2",
+          "gpu_spot_prices": [
+            {
+              "sku": "Standard_NC24rs_v3",
+              "gpu": "Tesla V100 (16GB)",
+              "gpu_count": 4,
+              "vcpus": 24,
+              "ram_gb": 448,
+              "spot_price_usd_hr": 3.025,
+              "ondemand_price_usd_hr": 16.857,
+              "savings_pct": 82.1,
+              "availability": "medium"
+            },
+            {
+              "sku": "Standard_NC64as_T4_v3",
+              "gpu": "Tesla T4 (16GB)",
+              "gpu_count": 4,
+              "vcpus": 64,
+              "ram_gb": 440,
+              "spot_price_usd_hr": 1.4381,
+              "ondemand_price_usd_hr": 8.021,
+              "savings_pct": 82.1,
+              "availability": "medium"
+            },
+            {
+              "sku": "Standard_NC12s_v3",
+              "gpu": "Tesla V100 (16GB)",
+              "gpu_count": 2,
+              "vcpus": 12,
+              "ram_gb": 224,
+              "spot_price_usd_hr": 1.286,
+              "ondemand_price_usd_hr": 7.16,
+              "savings_pct": 82.0,
+              "availability": "medium"
+            },
+            {
+              "sku": "Standard_NC96ads_A100_v4",
+              "gpu": "A100 (80GB)",
+              "gpu_count": 4,
+              "vcpus": 96,
+              "ram_gb": 880,
+              "spot_price_usd_hr": 3.3415,
+              "ondemand_price_usd_hr": 18.365,
+              "savings_pct": 81.8,
+              "availability": "medium"
+            },
+            {
+              "sku": "Standard_NC48ads_A100_v4",
+              "gpu": "A100 (80GB)",
+              "gpu_count": 2,
+              "vcpus": 48,
+              "ram_gb": 440,
+              "spot_price_usd_hr": 1.628,
+              "ondemand_price_usd_hr": 11.391,
+              "savings_pct": 85.7,
+              "availability": "medium"
+            },
+            {
+              "sku": "Standard_NC6s_v3",
+              "gpu": "Tesla V100 (16GB)",
+              "gpu_count": 1,
+              "vcpus": 6,
+              "ram_gb": 112,
+              "spot_price_usd_hr": 0.6483,
+              "ondemand_price_usd_hr": 3.58,
+              "savings_pct": 81.9,
+              "availability": "medium"
+            },
+            {
+              "sku": "Standard_NC8as_T4_v3",
+              "gpu": "Tesla T4 (16GB)",
+              "gpu_count": 1,
+              "vcpus": 8,
+              "ram_gb": 56,
+              "spot_price_usd_hr": 0.2604,
+              "ondemand_price_usd_hr": 1.246,
+              "savings_pct": 79.1,
+              "availability": "medium"
+            },
+            {
+              "sku": "Standard_NC16as_T4_v3",
+              "gpu": "Tesla T4 (16GB)",
+              "gpu_count": 1,
+              "vcpus": 16,
+              "ram_gb": 110,
+              "spot_price_usd_hr": 0.3892,
+              "ondemand_price_usd_hr": 2.143,
+              "savings_pct": 81.8,
+              "availability": "medium"
+            },
+            {
+              "sku": "Standard_NC4as_T4_v3",
+              "gpu": "Tesla T4 (16GB)",
+              "gpu_count": 1,
+              "vcpus": 4,
+              "ram_gb": 28,
+              "spot_price_usd_hr": 0.1783,
+              "ondemand_price_usd_hr": 0.799,
+              "savings_pct": 77.7,
+              "availability": "medium"
+            },
+            {
+              "sku": "Standard_NC24s_v3",
+              "gpu": "Tesla V100 (16GB)",
+              "gpu_count": 4,
+              "vcpus": 24,
+              "ram_gb": 448,
+              "spot_price_usd_hr": 2.6059,
+              "ondemand_price_usd_hr": 14.321,
+              "savings_pct": 81.8,
+              "availability": "medium"
+            },
+            {
+              "sku": "Standard_NV6ads_A10_v5",
+              "gpu": "A10 (6GB slice)",
+              "gpu_count": 1,
+              "vcpus": 6,
+              "ram_gb": 55,
+              "spot_price_usd_hr": 0.1076,
+              "ondemand_price_usd_hr": 0.843,
+              "savings_pct": 87.2,
+              "availability": "medium"
+            },
+            {
+              "sku": "Standard_NV4as_v4",
+              "gpu": "Radeon MI25 (4GB)",
+              "gpu_count": 1,
+              "vcpus": 4,
+              "ram_gb": 14,
+              "spot_price_usd_hr": 0.0511,
+              "ondemand_price_usd_hr": 0.475,
+              "savings_pct": 89.2,
+              "availability": "medium"
+            },
+            {
+              "sku": "Standard_NV16as_v4",
+              "gpu": "Radeon MI25 (16GB)",
+              "gpu_count": 1,
+              "vcpus": 16,
+              "ram_gb": 56,
+              "spot_price_usd_hr": 0.213,
+              "ondemand_price_usd_hr": 1.165,
+              "savings_pct": 81.7,
+              "availability": "medium"
+            },
+            {
+              "sku": "Standard_NV12s_v3",
+              "gpu": "Tesla M60 (8GB)",
+              "gpu_count": 1,
+              "vcpus": 12,
+              "ram_gb": 112,
+              "spot_price_usd_hr": 0.2658,
+              "ondemand_price_usd_hr": 1.977,
+              "savings_pct": 86.6,
+              "availability": "medium"
+            },
+            {
+              "sku": "Standard_NV32as_v4",
+              "gpu": "Radeon MI25 (32GB)",
+              "gpu_count": 1,
+              "vcpus": 32,
+              "ram_gb": 112,
+              "spot_price_usd_hr": 0.4318,
+              "ondemand_price_usd_hr": 2.33,
+              "savings_pct": 81.5,
+              "availability": "medium"
+            },
+            {
+              "sku": "Standard_NV8as_v4",
+              "gpu": "Radeon MI25 (8GB)",
+              "gpu_count": 1,
+              "vcpus": 8,
+              "ram_gb": 28,
+              "spot_price_usd_hr": 0.1044,
+              "ondemand_price_usd_hr": 0.95,
+              "savings_pct": 89.0,
+              "availability": "medium"
+            },
+            {
+              "sku": "Standard_NV36ads_A10_v5",
+              "gpu": "A10 (24GB)",
+              "gpu_count": 1,
+              "vcpus": 36,
+              "ram_gb": 440,
+              "spot_price_usd_hr": 0.7184,
+              "ondemand_price_usd_hr": 4.0,
+              "savings_pct": 82.0,
+              "availability": "medium"
+            },
+            {
+              "sku": "Standard_NV12ads_A10_v5",
+              "gpu": "A10 (12GB slice)",
+              "gpu_count": 1,
+              "vcpus": 12,
+              "ram_gb": 110,
+              "spot_price_usd_hr": 0.2196,
+              "ondemand_price_usd_hr": 1.135,
+              "savings_pct": 80.6,
+              "availability": "medium"
+            },
+            {
+              "sku": "Standard_NV18ads_A10_v5",
+              "gpu": "A10 (18GB slice)",
+              "gpu_count": 1,
+              "vcpus": 18,
+              "ram_gb": 220,
+              "spot_price_usd_hr": 0.3526,
+              "ondemand_price_usd_hr": 2.828,
+              "savings_pct": 87.5,
+              "availability": "medium"
+            },
+            {
+              "sku": "Standard_NV24s_v3",
+              "gpu": "Tesla M60 (16GB)",
+              "gpu_count": 2,
+              "vcpus": 24,
+              "ram_gb": 224,
+              "spot_price_usd_hr": 0.5004,
+              "ondemand_price_usd_hr": 3.954,
+              "savings_pct": 87.3,
+              "availability": "medium"
+            },
+            {
+              "sku": "Standard_NV48s_v3",
+              "gpu": "Tesla M60 (32GB)",
+              "gpu_count": 4,
+              "vcpus": 48,
+              "ram_gb": 448,
+              "spot_price_usd_hr": 1.068,
+              "ondemand_price_usd_hr": 5.7,
+              "savings_pct": 81.3,
+              "availability": "medium"
+            }
+          ]
+        },
+        "fr-central-3": {
+          "name": "France Central AZ-3",
+          "gpu_spot_prices": [
+            {
+              "sku": "Standard_NC24rs_v3",
+              "gpu": "Tesla V100 (16GB)",
+              "gpu_count": 4,
+              "vcpus": 24,
+              "ram_gb": 448,
+              "spot_price_usd_hr": 3.0336,
+              "ondemand_price_usd_hr": 16.857,
+              "savings_pct": 82.0,
+              "availability": "high"
+            },
+            {
+              "sku": "Standard_NC64as_T4_v3",
+              "gpu": "Tesla T4 (16GB)",
+              "gpu_count": 4,
+              "vcpus": 64,
+              "ram_gb": 440,
+              "spot_price_usd_hr": 1.5261,
+              "ondemand_price_usd_hr": 8.021,
+              "savings_pct": 81.0,
+              "availability": "high"
+            },
+            {
+              "sku": "Standard_NC12s_v3",
+              "gpu": "Tesla V100 (16GB)",
+              "gpu_count": 2,
+              "vcpus": 12,
+              "ram_gb": 224,
+              "spot_price_usd_hr": 1.3397,
+              "ondemand_price_usd_hr": 7.16,
+              "savings_pct": 81.3,
+              "availability": "high"
+            },
+            {
+              "sku": "Standard_NC96ads_A100_v4",
+              "gpu": "A100 (80GB)",
+              "gpu_count": 4,
+              "vcpus": 96,
+              "ram_gb": 880,
+              "spot_price_usd_hr": 3.3409,
+              "ondemand_price_usd_hr": 18.365,
+              "savings_pct": 81.8,
+              "availability": "high"
+            },
+            {
+              "sku": "Standard_NC48ads_A100_v4",
+              "gpu": "A100 (80GB)",
+              "gpu_count": 2,
+              "vcpus": 48,
+              "ram_gb": 440,
+              "spot_price_usd_hr": 1.761,
+              "ondemand_price_usd_hr": 11.391,
+              "savings_pct": 84.5,
+              "availability": "high"
+            },
+            {
+              "sku": "Standard_NC6s_v3",
+              "gpu": "Tesla V100 (16GB)",
+              "gpu_count": 1,
+              "vcpus": 6,
+              "ram_gb": 112,
+              "spot_price_usd_hr": 0.6711,
+              "ondemand_price_usd_hr": 3.58,
+              "savings_pct": 81.3,
+              "availability": "high"
+            },
+            {
+              "sku": "Standard_NC8as_T4_v3",
+              "gpu": "Tesla T4 (16GB)",
+              "gpu_count": 1,
+              "vcpus": 8,
+              "ram_gb": 56,
+              "spot_price_usd_hr": 0.267,
+              "ondemand_price_usd_hr": 1.246,
+              "savings_pct": 78.6,
+              "availability": "high"
+            },
+            {
+              "sku": "Standard_NC16as_T4_v3",
+              "gpu": "Tesla T4 (16GB)",
+              "gpu_count": 1,
+              "vcpus": 16,
+              "ram_gb": 110,
+              "spot_price_usd_hr": 0.4019,
+              "ondemand_price_usd_hr": 2.143,
+              "savings_pct": 81.2,
+              "availability": "high"
+            },
+            {
+              "sku": "Standard_NC4as_T4_v3",
+              "gpu": "Tesla T4 (16GB)",
+              "gpu_count": 1,
+              "vcpus": 4,
+              "ram_gb": 28,
+              "spot_price_usd_hr": 0.1771,
+              "ondemand_price_usd_hr": 0.799,
+              "savings_pct": 77.8,
+              "availability": "high"
+            },
+            {
+              "sku": "Standard_NC24s_v3",
+              "gpu": "Tesla V100 (16GB)",
+              "gpu_count": 4,
+              "vcpus": 24,
+              "ram_gb": 448,
+              "spot_price_usd_hr": 2.5738,
+              "ondemand_price_usd_hr": 14.321,
+              "savings_pct": 82.0,
+              "availability": "high"
+            },
+            {
+              "sku": "Standard_NV6ads_A10_v5",
+              "gpu": "A10 (6GB slice)",
+              "gpu_count": 1,
+              "vcpus": 6,
+              "ram_gb": 55,
+              "spot_price_usd_hr": 0.1092,
+              "ondemand_price_usd_hr": 0.843,
+              "savings_pct": 87.1,
+              "availability": "high"
+            },
+            {
+              "sku": "Standard_NV4as_v4",
+              "gpu": "Radeon MI25 (4GB)",
+              "gpu_count": 1,
+              "vcpus": 4,
+              "ram_gb": 14,
+              "spot_price_usd_hr": 0.0517,
+              "ondemand_price_usd_hr": 0.475,
+              "savings_pct": 89.1,
+              "availability": "high"
+            },
+            {
+              "sku": "Standard_NV16as_v4",
+              "gpu": "Radeon MI25 (16GB)",
+              "gpu_count": 1,
+              "vcpus": 16,
+              "ram_gb": 56,
+              "spot_price_usd_hr": 0.2074,
+              "ondemand_price_usd_hr": 1.165,
+              "savings_pct": 82.2,
+              "availability": "high"
+            },
+            {
+              "sku": "Standard_NV12s_v3",
+              "gpu": "Tesla M60 (8GB)",
+              "gpu_count": 1,
+              "vcpus": 12,
+              "ram_gb": 112,
+              "spot_price_usd_hr": 0.2509,
+              "ondemand_price_usd_hr": 1.977,
+              "savings_pct": 87.3,
+              "availability": "high"
+            },
+            {
+              "sku": "Standard_NV32as_v4",
+              "gpu": "Radeon MI25 (32GB)",
+              "gpu_count": 1,
+              "vcpus": 32,
+              "ram_gb": 112,
+              "spot_price_usd_hr": 0.41,
+              "ondemand_price_usd_hr": 2.33,
+              "savings_pct": 82.4,
+              "availability": "high"
+            },
+            {
+              "sku": "Standard_NV8as_v4",
+              "gpu": "Radeon MI25 (8GB)",
+              "gpu_count": 1,
+              "vcpus": 8,
+              "ram_gb": 28,
+              "spot_price_usd_hr": 0.1069,
+              "ondemand_price_usd_hr": 0.95,
+              "savings_pct": 88.8,
+              "availability": "high"
+            },
+            {
+              "sku": "Standard_NV36ads_A10_v5",
+              "gpu": "A10 (24GB)",
+              "gpu_count": 1,
+              "vcpus": 36,
+              "ram_gb": 440,
+              "spot_price_usd_hr": 0.7092,
+              "ondemand_price_usd_hr": 4.0,
+              "savings_pct": 82.3,
+              "availability": "high"
+            },
+            {
+              "sku": "Standard_NV12ads_A10_v5",
+              "gpu": "A10 (12GB slice)",
+              "gpu_count": 1,
+              "vcpus": 12,
+              "ram_gb": 110,
+              "spot_price_usd_hr": 0.2024,
+              "ondemand_price_usd_hr": 1.135,
+              "savings_pct": 82.2,
+              "availability": "high"
+            },
+            {
+              "sku": "Standard_NV18ads_A10_v5",
+              "gpu": "A10 (18GB slice)",
+              "gpu_count": 1,
+              "vcpus": 18,
+              "ram_gb": 220,
+              "spot_price_usd_hr": 0.3552,
+              "ondemand_price_usd_hr": 2.828,
+              "savings_pct": 87.4,
+              "availability": "high"
+            },
+            {
+              "sku": "Standard_NV24s_v3",
+              "gpu": "Tesla M60 (16GB)",
+              "gpu_count": 2,
+              "vcpus": 24,
+              "ram_gb": 224,
+              "spot_price_usd_hr": 0.5179,
+              "ondemand_price_usd_hr": 3.954,
+              "savings_pct": 86.9,
+              "availability": "high"
+            },
+            {
+              "sku": "Standard_NV48s_v3",
+              "gpu": "Tesla M60 (32GB)",
+              "gpu_count": 4,
+              "vcpus": 48,
+              "ram_gb": 448,
+              "spot_price_usd_hr": 1.0755,
+              "ondemand_price_usd_hr": 5.7,
+              "savings_pct": 81.1,
+              "availability": "high"
+            }
+          ]
+        }
+      },
+      "weather": {
+        "source": "open-meteo.com (LIVE)",
+        "current_temp_c": 11.9,
+        "current_wind_kmh": 13.2,
+        "current_solar_wm2": 0.0,
+        "hourly_forecast": [
+          {
+            "hour": "2026-02-22T00:00",
+            "temp_c": 13.1,
+            "wind_kmh": 14.2,
+            "solar_radiation_wm2": 0.0
+          },
+          {
+            "hour": "2026-02-22T01:00",
+            "temp_c": 13.0,
+            "wind_kmh": 14.2,
+            "solar_radiation_wm2": 0.0
+          },
+          {
+            "hour": "2026-02-22T02:00",
+            "temp_c": 13.0,
+            "wind_kmh": 13.0,
+            "solar_radiation_wm2": 0.0
+          },
+          {
+            "hour": "2026-02-22T03:00",
+            "temp_c": 12.8,
+            "wind_kmh": 12.8,
+            "solar_radiation_wm2": 0.0
+          },
+          {
+            "hour": "2026-02-22T04:00",
+            "temp_c": 12.7,
+            "wind_kmh": 11.0,
+            "solar_radiation_wm2": 0.0
+          },
+          {
+            "hour": "2026-02-22T05:00",
+            "temp_c": 12.6,
+            "wind_kmh": 11.4,
+            "solar_radiation_wm2": 0.0
+          },
+          {
+            "hour": "2026-02-22T06:00",
+            "temp_c": 12.5,
+            "wind_kmh": 11.2,
+            "solar_radiation_wm2": 0.0
+          },
+          {
+            "hour": "2026-02-22T07:00",
+            "temp_c": 12.3,
+            "wind_kmh": 11.0,
+            "solar_radiation_wm2": 0.0
+          },
+          {
+            "hour": "2026-02-22T08:00",
+            "temp_c": 12.2,
+            "wind_kmh": 10.5,
+            "solar_radiation_wm2": 0.0
+          },
+          {
+            "hour": "2026-02-22T09:00",
+            "temp_c": 12.4,
+            "wind_kmh": 11.7,
+            "solar_radiation_wm2": 0.8
+          },
+          {
+            "hour": "2026-02-22T10:00",
+            "temp_c": 12.7,
+            "wind_kmh": 12.8,
+            "solar_radiation_wm2": 11.2
+          },
+          {
+            "hour": "2026-02-22T11:00",
+            "temp_c": 13.2,
+            "wind_kmh": 16.1,
+            "solar_radiation_wm2": 26.8
+          },
+          {
+            "hour": "2026-02-22T12:00",
+            "temp_c": 13.7,
+            "wind_kmh": 15.3,
+            "solar_radiation_wm2": 23.8
+          },
+          {
+            "hour": "2026-02-22T13:00",
+            "temp_c": 13.6,
+            "wind_kmh": 16.5,
+            "solar_radiation_wm2": 7.5
+          },
+          {
+            "hour": "2026-02-22T14:00",
+            "temp_c": 13.9,
+            "wind_kmh": 16.9,
+            "solar_radiation_wm2": 20.8
+          },
+          {
+            "hour": "2026-02-22T15:00",
+            "temp_c": 14.1,
+            "wind_kmh": 16.5,
+            "solar_radiation_wm2": 20.8
+          },
+          {
+            "hour": "2026-02-22T16:00",
+            "temp_c": 13.7,
+            "wind_kmh": 16.0,
+            "solar_radiation_wm2": 1.2
+          },
+          {
+            "hour": "2026-02-22T17:00",
+            "temp_c": 13.3,
+            "wind_kmh": 15.0,
+            "solar_radiation_wm2": 0.0
+          },
+          {
+            "hour": "2026-02-22T18:00",
+            "temp_c": 12.9,
+            "wind_kmh": 15.4,
+            "solar_radiation_wm2": 0.0
+          },
+          {
+            "hour": "2026-02-22T19:00",
+            "temp_c": 12.6,
+            "wind_kmh": 14.5,
+            "solar_radiation_wm2": 0.0
+          },
+          {
+            "hour": "2026-02-22T20:00",
+            "temp_c": 12.5,
+            "wind_kmh": 14.9,
+            "solar_radiation_wm2": 0.0
+          },
+          {
+            "hour": "2026-02-22T21:00",
+            "temp_c": 12.4,
+            "wind_kmh": 15.0,
+            "solar_radiation_wm2": 0.0
+          },
+          {
+            "hour": "2026-02-22T22:00",
+            "temp_c": 12.2,
+            "wind_kmh": 15.1,
+            "solar_radiation_wm2": 0.0
+          },
+          {
+            "hour": "2026-02-22T23:00",
+            "temp_c": 11.9,
+            "wind_kmh": 13.2,
+            "solar_radiation_wm2": 0.0
+          }
+        ],
+        "cooling_advantage": "moderate - 11.9°C",
+        "renewable_potential": "moderate wind (13 km/h), low solar (0 W/m2)"
+      },
+      "carbon_intensity": {
+        "source": "NERVE weather-based model (wind=13km/h, solar=0W/m2)",
+        "current_gco2_kwh": 89.7,
+        "index": "low"
+      }
+    },
+    "westeurope": {
+      "cloud_provider": "azure",
+      "location": "Amsterdam, Netherlands",
+      "coordinates": {
+        "lat": 52.3676,
+        "lng": 4.9041
+      },
+      "availability_zones": {
+        "we-1": {
+          "name": "West Europe AZ-1",
+          "gpu_spot_prices": [
+            {
+              "sku": "Standard_NC24s_v3",
+              "gpu": "Tesla V100 (16GB)",
+              "gpu_count": 4,
+              "vcpus": 24,
+              "ram_gb": 448,
+              "spot_price_usd_hr": 2.7311,
+              "ondemand_price_usd_hr": 16.396,
+              "savings_pct": 83.3,
+              "availability": "high"
+            },
+            {
+              "sku": "Standard_NC48ads_A100_v4",
+              "gpu": "A100 (80GB)",
+              "gpu_count": 2,
+              "vcpus": 48,
+              "ram_gb": 440,
+              "spot_price_usd_hr": 4.6707,
+              "ondemand_price_usd_hr": 9.55,
+              "savings_pct": 51.1,
+              "availability": "medium"
+            },
+            {
+              "sku": "Standard_NCC40ads_H100_v5",
+              "gpu": "H100 (80GB)",
+              "gpu_count": 1,
+              "vcpus": 40,
+              "ram_gb": 320,
+              "spot_price_usd_hr": 1.6837,
+              "ondemand_price_usd_hr": 8.9,
+              "savings_pct": 81.1,
+              "availability": "high"
+            },
+            {
+              "sku": "Standard_NC96ads_A100_v4",
+              "gpu": "A100 (80GB)",
+              "gpu_count": 4,
+              "vcpus": 96,
+              "ram_gb": 880,
+              "spot_price_usd_hr": 9.5948,
+              "ondemand_price_usd_hr": 19.1,
+              "savings_pct": 49.8,
+              "availability": "medium"
+            },
+            {
+              "sku": "Standard_NC32ads_A10_v4",
+              "gpu": "A10 (24GB)",
+              "gpu_count": 2,
+              "vcpus": 32,
+              "ram_gb": 220,
+              "spot_price_usd_hr": 1.0701,
+              "ondemand_price_usd_hr": 5.72,
+              "savings_pct": 81.3,
+              "availability": "high"
+            },
+            {
+              "sku": "Standard_NC24rs_v3",
+              "gpu": "Tesla V100 (16GB)",
+              "gpu_count": 4,
+              "vcpus": 24,
+              "ram_gb": 448,
+              "spot_price_usd_hr": 3.0433,
+              "ondemand_price_usd_hr": 18.036,
+              "savings_pct": 83.1,
+              "availability": "high"
+            },
+            {
+              "sku": "Standard_NC16as_T4_v3",
+              "gpu": "Tesla T4 (16GB)",
+              "gpu_count": 1,
+              "vcpus": 16,
+              "ram_gb": 110,
+              "spot_price_usd_hr": 0.7747,
+              "ondemand_price_usd_hr": 2.241,
+              "savings_pct": 65.4,
+              "availability": "high"
+            },
+            {
+              "sku": "Standard_NC8ads_A10_v4",
+              "gpu": "A10 (24GB)",
+              "gpu_count": 1,
+              "vcpus": 8,
+              "ram_gb": 55,
+              "spot_price_usd_hr": 0.2713,
+              "ondemand_price_usd_hr": 1.43,
+              "savings_pct": 81.0,
+              "availability": "high"
+            },
+            {
+              "sku": "Standard_NC12s_v3",
+              "gpu": "Tesla V100 (16GB)",
+              "gpu_count": 2,
+              "vcpus": 12,
+              "ram_gb": 224,
+              "spot_price_usd_hr": 1.4408,
+              "ondemand_price_usd_hr": 7.646,
+              "savings_pct": 81.2,
+              "availability": "high"
+            },
+            {
+              "sku": "Standard_NC64as_T4_v3",
+              "gpu": "Tesla T4 (16GB)",
+              "gpu_count": 4,
+              "vcpus": 64,
+              "ram_gb": 440,
+              "spot_price_usd_hr": 2.8467,
+              "ondemand_price_usd_hr": 5.44,
+              "savings_pct": 47.7,
+              "availability": "medium"
+            },
+            {
+              "sku": "Standard_NC16ads_A10_v4",
+              "gpu": "A10 (24GB)",
+              "gpu_count": 1,
+              "vcpus": 16,
+              "ram_gb": 110,
+              "spot_price_usd_hr": 0.5273,
+              "ondemand_price_usd_hr": 2.86,
+              "savings_pct": 81.6,
+              "availability": "high"
+            },
+            {
+              "sku": "Standard_NC4as_T4_v3",
+              "gpu": "Tesla T4 (16GB)",
+              "gpu_count": 1,
+              "vcpus": 4,
+              "ram_gb": 28,
+              "spot_price_usd_hr": 0.3386,
+              "ondemand_price_usd_hr": 0.842,
+              "savings_pct": 59.8,
+              "availability": "high"
+            },
+            {
+              "sku": "Standard_NC80adis_H100_v5",
+              "gpu": "H100 (80GB)",
+              "gpu_count": 2,
+              "vcpus": 80,
+              "ram_gb": 640,
+              "spot_price_usd_hr": 12.7892,
+              "ondemand_price_usd_hr": 18.16,
+              "savings_pct": 29.6,
+              "availability": "low"
+            },
+            {
+              "sku": "Standard_NC8as_T4_v3",
+              "gpu": "Tesla T4 (16GB)",
+              "gpu_count": 1,
+              "vcpus": 8,
+              "ram_gb": 56,
+              "spot_price_usd_hr": 0.5009,
+              "ondemand_price_usd_hr": 0.94,
+              "savings_pct": 46.7,
+              "availability": "medium"
+            },
+            {
+              "sku": "Standard_NC6s_v3",
+              "gpu": "Tesla V100 (16GB)",
+              "gpu_count": 1,
+              "vcpus": 6,
+              "ram_gb": 112,
+              "spot_price_usd_hr": 0.717,
+              "ondemand_price_usd_hr": 3.823,
+              "savings_pct": 81.2,
+              "availability": "high"
+            },
+            {
+              "sku": "Standard_NV18ads_A10_v5",
+              "gpu": "A10 (18GB slice)",
+              "gpu_count": 1,
+              "vcpus": 18,
+              "ram_gb": 220,
+              "spot_price_usd_hr": 0.3875,
+              "ondemand_price_usd_hr": 2.908,
+              "savings_pct": 86.7,
+              "availability": "high"
+            },
+            {
+              "sku": "Standard_NV16as_v4",
+              "gpu": "Radeon MI25 (16GB)",
+              "gpu_count": 1,
+              "vcpus": 16,
+              "ram_gb": 56,
+              "spot_price_usd_hr": 0.2121,
+              "ondemand_price_usd_hr": 1.165,
+              "savings_pct": 81.8,
+              "availability": "high"
+            },
+            {
+              "sku": "Standard_NV6ads_A10_v5",
+              "gpu": "A10 (6GB slice)",
+              "gpu_count": 1,
+              "vcpus": 6,
+              "ram_gb": 55,
+              "spot_price_usd_hr": 0.1042,
+              "ondemand_price_usd_hr": 0.866,
+              "savings_pct": 88.0,
+              "availability": "high"
+            },
+            {
+              "sku": "Standard_NV12s_v3",
+              "gpu": "Tesla M60 (8GB)",
+              "gpu_count": 1,
+              "vcpus": 12,
+              "ram_gb": 112,
+              "spot_price_usd_hr": 0.2563,
+              "ondemand_price_usd_hr": 1.426,
+              "savings_pct": 82.0,
+              "availability": "high"
+            },
+            {
+              "sku": "Standard_NV12ads_A10_v5",
+              "gpu": "A10 (12GB slice)",
+              "gpu_count": 1,
+              "vcpus": 12,
+              "ram_gb": 110,
+              "spot_price_usd_hr": 0.225,
+              "ondemand_price_usd_hr": 1.18,
+              "savings_pct": 80.9,
+              "availability": "high"
+            },
+            {
+              "sku": "Standard_NV48s_v3",
+              "gpu": "Tesla M60 (32GB)",
+              "gpu_count": 4,
+              "vcpus": 48,
+              "ram_gb": 448,
+              "spot_price_usd_hr": 1.0583,
+              "ondemand_price_usd_hr": 7.908,
+              "savings_pct": 86.6,
+              "availability": "high"
+            },
+            {
+              "sku": "Standard_NV36ads_A10_v5",
+              "gpu": "A10 (24GB)",
+              "gpu_count": 1,
+              "vcpus": 36,
+              "ram_gb": 440,
+              "spot_price_usd_hr": 0.7417,
+              "ondemand_price_usd_hr": 5.816,
+              "savings_pct": 87.2,
+              "availability": "high"
+            },
+            {
+              "sku": "Standard_NV32as_v4",
+              "gpu": "Radeon MI25 (32GB)",
+              "gpu_count": 1,
+              "vcpus": 32,
+              "ram_gb": 112,
+              "spot_price_usd_hr": 0.4331,
+              "ondemand_price_usd_hr": 2.33,
+              "savings_pct": 81.4,
+              "availability": "high"
+            },
+            {
+              "sku": "Standard_NV8as_v4",
+              "gpu": "Radeon MI25 (8GB)",
+              "gpu_count": 1,
+              "vcpus": 8,
+              "ram_gb": 28,
+              "spot_price_usd_hr": 0.1107,
+              "ondemand_price_usd_hr": 0.582,
+              "savings_pct": 81.0,
+              "availability": "high"
+            },
+            {
+              "sku": "Standard_NV4as_v4",
+              "gpu": "Radeon MI25 (4GB)",
+              "gpu_count": 1,
+              "vcpus": 4,
+              "ram_gb": 14,
+              "spot_price_usd_hr": 0.0563,
+              "ondemand_price_usd_hr": 0.475,
+              "savings_pct": 88.1,
+              "availability": "high"
+            },
+            {
+              "sku": "Standard_NV24s_v3",
+              "gpu": "Tesla M60 (16GB)",
+              "gpu_count": 2,
+              "vcpus": 24,
+              "ram_gb": 224,
+              "spot_price_usd_hr": 0.541,
+              "ondemand_price_usd_hr": 3.954,
+              "savings_pct": 86.3,
+              "availability": "high"
+            }
+          ]
+        },
+        "we-2": {
+          "name": "West Europe AZ-2",
+          "gpu_spot_prices": [
+            {
+              "sku": "Standard_NC24s_v3",
+              "gpu": "Tesla V100 (16GB)",
+              "gpu_count": 4,
+              "vcpus": 24,
+              "ram_gb": 448,
+              "spot_price_usd_hr": 2.7432,
+              "ondemand_price_usd_hr": 16.396,
+              "savings_pct": 83.3,
+              "availability": "high"
+            },
+            {
+              "sku": "Standard_NC48ads_A100_v4",
+              "gpu": "A100 (80GB)",
+              "gpu_count": 2,
+              "vcpus": 48,
+              "ram_gb": 440,
+              "spot_price_usd_hr": 4.9712,
+              "ondemand_price_usd_hr": 9.55,
+              "savings_pct": 47.9,
+              "availability": "medium"
+            },
+            {
+              "sku": "Standard_NCC40ads_H100_v5",
+              "gpu": "H100 (80GB)",
+              "gpu_count": 1,
+              "vcpus": 40,
+              "ram_gb": 320,
+              "spot_price_usd_hr": 1.5658,
+              "ondemand_price_usd_hr": 8.9,
+              "savings_pct": 82.4,
+              "availability": "high"
+            },
+            {
+              "sku": "Standard_NC96ads_A100_v4",
+              "gpu": "A100 (80GB)",
+              "gpu_count": 4,
+              "vcpus": 96,
+              "ram_gb": 880,
+              "spot_price_usd_hr": 9.46,
+              "ondemand_price_usd_hr": 19.1,
+              "savings_pct": 50.5,
+              "availability": "medium"
+            },
+            {
+              "sku": "Standard_NC32ads_A10_v4",
+              "gpu": "A10 (24GB)",
+              "gpu_count": 2,
+              "vcpus": 32,
+              "ram_gb": 220,
+              "spot_price_usd_hr": 1.0832,
+              "ondemand_price_usd_hr": 5.72,
+              "savings_pct": 81.1,
+              "availability": "high"
+            },
+            {
+              "sku": "Standard_NC24rs_v3",
+              "gpu": "Tesla V100 (16GB)",
+              "gpu_count": 4,
+              "vcpus": 24,
+              "ram_gb": 448,
+              "spot_price_usd_hr": 2.9593,
+              "ondemand_price_usd_hr": 18.036,
+              "savings_pct": 83.6,
+              "availability": "high"
+            },
+            {
+              "sku": "Standard_NC16as_T4_v3",
+              "gpu": "Tesla T4 (16GB)",
+              "gpu_count": 1,
+              "vcpus": 16,
+              "ram_gb": 110,
+              "spot_price_usd_hr": 0.8287,
+              "ondemand_price_usd_hr": 2.241,
+              "savings_pct": 63.0,
+              "availability": "high"
+            },
+            {
+              "sku": "Standard_NC8ads_A10_v4",
+              "gpu": "A10 (24GB)",
+              "gpu_count": 1,
+              "vcpus": 8,
+              "ram_gb": 55,
+              "spot_price_usd_hr": 0.2689,
+              "ondemand_price_usd_hr": 1.43,
+              "savings_pct": 81.2,
+              "availability": "high"
+            },
+            {
+              "sku": "Standard_NC12s_v3",
+              "gpu": "Tesla V100 (16GB)",
+              "gpu_count": 2,
+              "vcpus": 12,
+              "ram_gb": 224,
+              "spot_price_usd_hr": 1.3971,
+              "ondemand_price_usd_hr": 7.646,
+              "savings_pct": 81.7,
+              "availability": "high"
+            },
+            {
+              "sku": "Standard_NC64as_T4_v3",
+              "gpu": "Tesla T4 (16GB)",
+              "gpu_count": 4,
+              "vcpus": 64,
+              "ram_gb": 440,
+              "spot_price_usd_hr": 3.0257,
+              "ondemand_price_usd_hr": 5.44,
+              "savings_pct": 44.4,
+              "availability": "medium"
+            },
+            {
+              "sku": "Standard_NC16ads_A10_v4",
+              "gpu": "A10 (24GB)",
+              "gpu_count": 1,
+              "vcpus": 16,
+              "ram_gb": 110,
+              "spot_price_usd_hr": 0.5233,
+              "ondemand_price_usd_hr": 2.86,
+              "savings_pct": 81.7,
+              "availability": "high"
+            },
+            {
+              "sku": "Standard_NC4as_T4_v3",
+              "gpu": "Tesla T4 (16GB)",
+              "gpu_count": 1,
+              "vcpus": 4,
+              "ram_gb": 28,
+              "spot_price_usd_hr": 0.3588,
+              "ondemand_price_usd_hr": 0.842,
+              "savings_pct": 57.4,
+              "availability": "high"
+            },
+            {
+              "sku": "Standard_NC80adis_H100_v5",
+              "gpu": "H100 (80GB)",
+              "gpu_count": 2,
+              "vcpus": 80,
+              "ram_gb": 640,
+              "spot_price_usd_hr": 13.2685,
+              "ondemand_price_usd_hr": 18.16,
+              "savings_pct": 26.9,
+              "availability": "low"
+            },
+            {
+              "sku": "Standard_NC8as_T4_v3",
+              "gpu": "Tesla T4 (16GB)",
+              "gpu_count": 1,
+              "vcpus": 8,
+              "ram_gb": 56,
+              "spot_price_usd_hr": 0.5315,
+              "ondemand_price_usd_hr": 0.94,
+              "savings_pct": 43.5,
+              "availability": "medium"
+            },
+            {
+              "sku": "Standard_NC6s_v3",
+              "gpu": "Tesla V100 (16GB)",
+              "gpu_count": 1,
+              "vcpus": 6,
+              "ram_gb": 112,
+              "spot_price_usd_hr": 0.6799,
+              "ondemand_price_usd_hr": 3.823,
+              "savings_pct": 82.2,
+              "availability": "high"
+            },
+            {
+              "sku": "Standard_NV18ads_A10_v5",
+              "gpu": "A10 (18GB slice)",
+              "gpu_count": 1,
+              "vcpus": 18,
+              "ram_gb": 220,
+              "spot_price_usd_hr": 0.3681,
+              "ondemand_price_usd_hr": 2.908,
+              "savings_pct": 87.3,
+              "availability": "high"
+            },
+            {
+              "sku": "Standard_NV16as_v4",
+              "gpu": "Radeon MI25 (16GB)",
+              "gpu_count": 1,
+              "vcpus": 16,
+              "ram_gb": 56,
+              "spot_price_usd_hr": 0.2179,
+              "ondemand_price_usd_hr": 1.165,
+              "savings_pct": 81.3,
+              "availability": "high"
+            },
+            {
+              "sku": "Standard_NV6ads_A10_v5",
+              "gpu": "A10 (6GB slice)",
+              "gpu_count": 1,
+              "vcpus": 6,
+              "ram_gb": 55,
+              "spot_price_usd_hr": 0.1123,
+              "ondemand_price_usd_hr": 0.866,
+              "savings_pct": 87.0,
+              "availability": "high"
+            },
+            {
+              "sku": "Standard_NV12s_v3",
+              "gpu": "Tesla M60 (8GB)",
+              "gpu_count": 1,
+              "vcpus": 12,
+              "ram_gb": 112,
+              "spot_price_usd_hr": 0.2566,
+              "ondemand_price_usd_hr": 1.426,
+              "savings_pct": 82.0,
+              "availability": "high"
+            },
+            {
+              "sku": "Standard_NV12ads_A10_v5",
+              "gpu": "A10 (12GB slice)",
+              "gpu_count": 1,
+              "vcpus": 12,
+              "ram_gb": 110,
+              "spot_price_usd_hr": 0.2231,
+              "ondemand_price_usd_hr": 1.18,
+              "savings_pct": 81.1,
+              "availability": "high"
+            },
+            {
+              "sku": "Standard_NV48s_v3",
+              "gpu": "Tesla M60 (32GB)",
+              "gpu_count": 4,
+              "vcpus": 48,
+              "ram_gb": 448,
+              "spot_price_usd_hr": 1.0041,
+              "ondemand_price_usd_hr": 7.908,
+              "savings_pct": 87.3,
+              "availability": "high"
+            },
+            {
+              "sku": "Standard_NV36ads_A10_v5",
+              "gpu": "A10 (24GB)",
+              "gpu_count": 1,
+              "vcpus": 36,
+              "ram_gb": 440,
+              "spot_price_usd_hr": 0.7512,
+              "ondemand_price_usd_hr": 5.816,
+              "savings_pct": 87.1,
+              "availability": "high"
+            },
+            {
+              "sku": "Standard_NV32as_v4",
+              "gpu": "Radeon MI25 (32GB)",
+              "gpu_count": 1,
+              "vcpus": 32,
+              "ram_gb": 112,
+              "spot_price_usd_hr": 0.4226,
+              "ondemand_price_usd_hr": 2.33,
+              "savings_pct": 81.9,
+              "availability": "high"
+            },
+            {
+              "sku": "Standard_NV8as_v4",
+              "gpu": "Radeon MI25 (8GB)",
+              "gpu_count": 1,
+              "vcpus": 8,
+              "ram_gb": 28,
+              "spot_price_usd_hr": 0.1065,
+              "ondemand_price_usd_hr": 0.582,
+              "savings_pct": 81.7,
+              "availability": "high"
+            },
+            {
+              "sku": "Standard_NV4as_v4",
+              "gpu": "Radeon MI25 (4GB)",
+              "gpu_count": 1,
+              "vcpus": 4,
+              "ram_gb": 14,
+              "spot_price_usd_hr": 0.0547,
+              "ondemand_price_usd_hr": 0.475,
+              "savings_pct": 88.5,
+              "availability": "high"
+            },
+            {
+              "sku": "Standard_NV24s_v3",
+              "gpu": "Tesla M60 (16GB)",
+              "gpu_count": 2,
+              "vcpus": 24,
+              "ram_gb": 224,
+              "spot_price_usd_hr": 0.5009,
+              "ondemand_price_usd_hr": 3.954,
+              "savings_pct": 87.3,
+              "availability": "high"
+            }
+          ]
+        },
+        "we-3": {
+          "name": "West Europe AZ-3",
+          "gpu_spot_prices": [
+            {
+              "sku": "Standard_NC24s_v3",
+              "gpu": "Tesla V100 (16GB)",
+              "gpu_count": 4,
+              "vcpus": 24,
+              "ram_gb": 448,
+              "spot_price_usd_hr": 2.8886,
+              "ondemand_price_usd_hr": 16.396,
+              "savings_pct": 82.4,
+              "availability": "high"
+            },
+            {
+              "sku": "Standard_NC48ads_A100_v4",
+              "gpu": "A100 (80GB)",
+              "gpu_count": 2,
+              "vcpus": 48,
+              "ram_gb": 440,
+              "spot_price_usd_hr": 4.8725,
+              "ondemand_price_usd_hr": 9.55,
+              "savings_pct": 49.0,
+              "availability": "medium"
+            },
+            {
+              "sku": "Standard_NCC40ads_H100_v5",
+              "gpu": "H100 (80GB)",
+              "gpu_count": 1,
+              "vcpus": 40,
+              "ram_gb": 320,
+              "spot_price_usd_hr": 1.6288,
+              "ondemand_price_usd_hr": 8.9,
+              "savings_pct": 81.7,
+              "availability": "high"
+            },
+            {
+              "sku": "Standard_NC96ads_A100_v4",
+              "gpu": "A100 (80GB)",
+              "gpu_count": 4,
+              "vcpus": 96,
+              "ram_gb": 880,
+              "spot_price_usd_hr": 9.447,
+              "ondemand_price_usd_hr": 19.1,
+              "savings_pct": 50.5,
+              "availability": "medium"
+            },
+            {
+              "sku": "Standard_NC32ads_A10_v4",
+              "gpu": "A10 (24GB)",
+              "gpu_count": 2,
+              "vcpus": 32,
+              "ram_gb": 220,
+              "spot_price_usd_hr": 1.0784,
+              "ondemand_price_usd_hr": 5.72,
+              "savings_pct": 81.1,
+              "availability": "high"
+            },
+            {
+              "sku": "Standard_NC24rs_v3",
+              "gpu": "Tesla V100 (16GB)",
+              "gpu_count": 4,
+              "vcpus": 24,
+              "ram_gb": 448,
+              "spot_price_usd_hr": 3.2148,
+              "ondemand_price_usd_hr": 18.036,
+              "savings_pct": 82.2,
+              "availability": "high"
+            },
+            {
+              "sku": "Standard_NC16as_T4_v3",
+              "gpu": "Tesla T4 (16GB)",
+              "gpu_count": 1,
+              "vcpus": 16,
+              "ram_gb": 110,
+              "spot_price_usd_hr": 0.82,
+              "ondemand_price_usd_hr": 2.241,
+              "savings_pct": 63.4,
+              "availability": "high"
+            },
+            {
+              "sku": "Standard_NC8ads_A10_v4",
+              "gpu": "A10 (24GB)",
+              "gpu_count": 1,
+              "vcpus": 8,
+              "ram_gb": 55,
+              "spot_price_usd_hr": 0.2738,
+              "ondemand_price_usd_hr": 1.43,
+              "savings_pct": 80.9,
+              "availability": "high"
+            },
+            {
+              "sku": "Standard_NC12s_v3",
+              "gpu": "Tesla V100 (16GB)",
+              "gpu_count": 2,
+              "vcpus": 12,
+              "ram_gb": 224,
+              "spot_price_usd_hr": 1.398,
+              "ondemand_price_usd_hr": 7.646,
+              "savings_pct": 81.7,
+              "availability": "high"
+            },
+            {
+              "sku": "Standard_NC64as_T4_v3",
+              "gpu": "Tesla T4 (16GB)",
+              "gpu_count": 4,
+              "vcpus": 64,
+              "ram_gb": 440,
+              "spot_price_usd_hr": 2.8097,
+              "ondemand_price_usd_hr": 5.44,
+              "savings_pct": 48.4,
+              "availability": "medium"
+            },
+            {
+              "sku": "Standard_NC16ads_A10_v4",
+              "gpu": "A10 (24GB)",
+              "gpu_count": 1,
+              "vcpus": 16,
+              "ram_gb": 110,
+              "spot_price_usd_hr": 0.5067,
+              "ondemand_price_usd_hr": 2.86,
+              "savings_pct": 82.3,
+              "availability": "high"
+            },
+            {
+              "sku": "Standard_NC4as_T4_v3",
+              "gpu": "Tesla T4 (16GB)",
+              "gpu_count": 1,
+              "vcpus": 4,
+              "ram_gb": 28,
+              "spot_price_usd_hr": 0.3576,
+              "ondemand_price_usd_hr": 0.842,
+              "savings_pct": 57.5,
+              "availability": "high"
+            },
+            {
+              "sku": "Standard_NC80adis_H100_v5",
+              "gpu": "H100 (80GB)",
+              "gpu_count": 2,
+              "vcpus": 80,
+              "ram_gb": 640,
+              "spot_price_usd_hr": 13.1307,
+              "ondemand_price_usd_hr": 18.16,
+              "savings_pct": 27.7,
+              "availability": "low"
+            },
+            {
+              "sku": "Standard_NC8as_T4_v3",
+              "gpu": "Tesla T4 (16GB)",
+              "gpu_count": 1,
+              "vcpus": 8,
+              "ram_gb": 56,
+              "spot_price_usd_hr": 0.5203,
+              "ondemand_price_usd_hr": 0.94,
+              "savings_pct": 44.7,
+              "availability": "medium"
+            },
+            {
+              "sku": "Standard_NC6s_v3",
+              "gpu": "Tesla V100 (16GB)",
+              "gpu_count": 1,
+              "vcpus": 6,
+              "ram_gb": 112,
+              "spot_price_usd_hr": 0.7047,
+              "ondemand_price_usd_hr": 3.823,
+              "savings_pct": 81.6,
+              "availability": "high"
+            },
+            {
+              "sku": "Standard_NV18ads_A10_v5",
+              "gpu": "A10 (18GB slice)",
+              "gpu_count": 1,
+              "vcpus": 18,
+              "ram_gb": 220,
+              "spot_price_usd_hr": 0.396,
+              "ondemand_price_usd_hr": 2.908,
+              "savings_pct": 86.4,
+              "availability": "high"
+            },
+            {
+              "sku": "Standard_NV16as_v4",
+              "gpu": "Radeon MI25 (16GB)",
+              "gpu_count": 1,
+              "vcpus": 16,
+              "ram_gb": 56,
+              "spot_price_usd_hr": 0.2091,
+              "ondemand_price_usd_hr": 1.165,
+              "savings_pct": 82.1,
+              "availability": "high"
+            },
+            {
+              "sku": "Standard_NV6ads_A10_v5",
+              "gpu": "A10 (6GB slice)",
+              "gpu_count": 1,
+              "vcpus": 6,
+              "ram_gb": 55,
+              "spot_price_usd_hr": 0.1074,
+              "ondemand_price_usd_hr": 0.866,
+              "savings_pct": 87.6,
+              "availability": "high"
+            },
+            {
+              "sku": "Standard_NV12s_v3",
+              "gpu": "Tesla M60 (8GB)",
+              "gpu_count": 1,
+              "vcpus": 12,
+              "ram_gb": 112,
+              "spot_price_usd_hr": 0.2514,
+              "ondemand_price_usd_hr": 1.426,
+              "savings_pct": 82.4,
+              "availability": "high"
+            },
+            {
+              "sku": "Standard_NV12ads_A10_v5",
+              "gpu": "A10 (12GB slice)",
+              "gpu_count": 1,
+              "vcpus": 12,
+              "ram_gb": 110,
+              "spot_price_usd_hr": 0.208,
+              "ondemand_price_usd_hr": 1.18,
+              "savings_pct": 82.4,
+              "availability": "high"
+            },
+            {
+              "sku": "Standard_NV48s_v3",
+              "gpu": "Tesla M60 (32GB)",
+              "gpu_count": 4,
+              "vcpus": 48,
+              "ram_gb": 448,
+              "spot_price_usd_hr": 1.068,
+              "ondemand_price_usd_hr": 7.908,
+              "savings_pct": 86.5,
+              "availability": "high"
+            },
+            {
+              "sku": "Standard_NV36ads_A10_v5",
+              "gpu": "A10 (24GB)",
+              "gpu_count": 1,
+              "vcpus": 36,
+              "ram_gb": 440,
+              "spot_price_usd_hr": 0.7819,
+              "ondemand_price_usd_hr": 5.816,
+              "savings_pct": 86.6,
+              "availability": "high"
+            },
+            {
+              "sku": "Standard_NV32as_v4",
+              "gpu": "Radeon MI25 (32GB)",
+              "gpu_count": 1,
+              "vcpus": 32,
+              "ram_gb": 112,
+              "spot_price_usd_hr": 0.4288,
+              "ondemand_price_usd_hr": 2.33,
+              "savings_pct": 81.6,
+              "availability": "high"
+            },
+            {
+              "sku": "Standard_NV8as_v4",
+              "gpu": "Radeon MI25 (8GB)",
+              "gpu_count": 1,
+              "vcpus": 8,
+              "ram_gb": 28,
+              "spot_price_usd_hr": 0.1101,
+              "ondemand_price_usd_hr": 0.582,
+              "savings_pct": 81.1,
+              "availability": "high"
+            },
+            {
+              "sku": "Standard_NV4as_v4",
+              "gpu": "Radeon MI25 (4GB)",
+              "gpu_count": 1,
+              "vcpus": 4,
+              "ram_gb": 14,
+              "spot_price_usd_hr": 0.0555,
+              "ondemand_price_usd_hr": 0.475,
+              "savings_pct": 88.3,
+              "availability": "high"
+            },
+            {
+              "sku": "Standard_NV24s_v3",
+              "gpu": "Tesla M60 (16GB)",
+              "gpu_count": 2,
+              "vcpus": 24,
+              "ram_gb": 224,
+              "spot_price_usd_hr": 0.5452,
+              "ondemand_price_usd_hr": 3.954,
+              "savings_pct": 86.2,
+              "availability": "high"
+            }
+          ]
+        }
+      },
+      "weather": {
+        "source": "open-meteo.com (LIVE)",
+        "current_temp_c": 8.6,
+        "current_wind_kmh": 21.2,
+        "current_solar_wm2": 0.0,
+        "hourly_forecast": [
+          {
+            "hour": "2026-02-22T00:00",
+            "temp_c": 10.1,
+            "wind_kmh": 22.3,
+            "solar_radiation_wm2": 0.0
+          },
+          {
+            "hour": "2026-02-22T01:00",
+            "temp_c": 10.3,
+            "wind_kmh": 29.2,
+            "solar_radiation_wm2": 0.0
+          },
+          {
+            "hour": "2026-02-22T02:00",
+            "temp_c": 10.0,
+            "wind_kmh": 29.2,
+            "solar_radiation_wm2": 0.0
+          },
+          {
+            "hour": "2026-02-22T03:00",
+            "temp_c": 9.7,
+            "wind_kmh": 28.4,
+            "solar_radiation_wm2": 0.0
+          },
+          {
+            "hour": "2026-02-22T04:00",
+            "temp_c": 9.6,
+            "wind_kmh": 25.9,
+            "solar_radiation_wm2": 0.0
+          },
+          {
+            "hour": "2026-02-22T05:00",
+            "temp_c": 10.0,
+            "wind_kmh": 28.4,
+            "solar_radiation_wm2": 0.0
+          },
+          {
+            "hour": "2026-02-22T06:00",
+            "temp_c": 10.1,
+            "wind_kmh": 27.4,
+            "solar_radiation_wm2": 0.0
+          },
+          {
+            "hour": "2026-02-22T07:00",
+            "temp_c": 10.3,
+            "wind_kmh": 26.6,
+            "solar_radiation_wm2": 0.0
+          },
+          {
+            "hour": "2026-02-22T08:00",
+            "temp_c": 10.4,
+            "wind_kmh": 27.7,
+            "solar_radiation_wm2": 0.0
+          },
+          {
+            "hour": "2026-02-22T09:00",
+            "temp_c": 10.3,
+            "wind_kmh": 30.2,
+            "solar_radiation_wm2": 0.0
+          },
+          {
+            "hour": "2026-02-22T10:00",
+            "temp_c": 9.8,
+            "wind_kmh": 32.8,
+            "solar_radiation_wm2": 0.0
+          },
+          {
+            "hour": "2026-02-22T11:00",
+            "temp_c": 9.8,
+            "wind_kmh": 32.8,
+            "solar_radiation_wm2": 0.1
+          },
+          {
+            "hour": "2026-02-22T12:00",
+            "temp_c": 9.6,
+            "wind_kmh": 30.6,
+            "solar_radiation_wm2": 0.5
+          },
+          {
+            "hour": "2026-02-22T13:00",
+            "temp_c": 10.1,
+            "wind_kmh": 28.4,
+            "solar_radiation_wm2": 2.1
+          },
+          {
+            "hour": "2026-02-22T14:00",
+            "temp_c": 10.4,
+            "wind_kmh": 29.5,
+            "solar_radiation_wm2": 8.2
+          },
+          {
+            "hour": "2026-02-22T15:00",
+            "temp_c": 10.2,
+            "wind_kmh": 28.8,
+            "solar_radiation_wm2": 1.1
+          },
+          {
+            "hour": "2026-02-22T16:00",
+            "temp_c": 9.9,
+            "wind_kmh": 25.2,
+            "solar_radiation_wm2": 0.6
+          },
+          {
+            "hour": "2026-02-22T17:00",
+            "temp_c": 9.9,
+            "wind_kmh": 23.0,
+            "solar_radiation_wm2": 6.1
+          },
+          {
+            "hour": "2026-02-22T18:00",
+            "temp_c": 9.3,
+            "wind_kmh": 23.4,
+            "solar_radiation_wm2": 1.7
+          },
+          {
+            "hour": "2026-02-22T19:00",
+            "temp_c": 8.8,
+            "wind_kmh": 20.5,
+            "solar_radiation_wm2": 0.0
+          },
+          {
+            "hour": "2026-02-22T20:00",
+            "temp_c": 8.5,
+            "wind_kmh": 20.9,
+            "solar_radiation_wm2": 0.0
+          },
+          {
+            "hour": "2026-02-22T21:00",
+            "temp_c": 8.5,
+            "wind_kmh": 18.7,
+            "solar_radiation_wm2": 0.0
+          },
+          {
+            "hour": "2026-02-22T22:00",
+            "temp_c": 8.6,
+            "wind_kmh": 20.2,
+            "solar_radiation_wm2": 0.0
+          },
+          {
+            "hour": "2026-02-22T23:00",
+            "temp_c": 8.6,
+            "wind_kmh": 21.2,
+            "solar_radiation_wm2": 0.0
+          }
+        ],
+        "cooling_advantage": "good - 8.6°C",
+        "renewable_potential": "high wind (21 km/h), low solar (0 W/m2)"
+      },
+      "carbon_intensity": {
+        "source": "NERVE weather-based model (wind=21km/h, solar=0W/m2)",
+        "current_gco2_kwh": 449.5,
+        "index": "very high"
+      }
+    },
+    "uksouth": {
+      "cloud_provider": "azure",
+      "location": "London, UK",
+      "coordinates": {
+        "lat": 51.5074,
+        "lng": -0.1278
+      },
+      "availability_zones": {
+        "uk-south-1": {
+          "name": "UK South AZ-1",
+          "gpu_spot_prices": [
+            {
+              "sku": "Standard_NC64as_T4_v3",
+              "gpu": "Tesla T4 (16GB)",
+              "gpu_count": 4,
+              "vcpus": 64,
+              "ram_gb": 440,
+              "spot_price_usd_hr": 3.055,
+              "ondemand_price_usd_hr": 5.092,
+              "savings_pct": 40.0,
+              "availability": "low"
+            },
+            {
+              "sku": "Standard_NC48ads_A100_v4",
+              "gpu": "A100 (80GB)",
+              "gpu_count": 2,
+              "vcpus": 48,
+              "ram_gb": 440,
+              "spot_price_usd_hr": 1.878,
+              "ondemand_price_usd_hr": 9.183,
+              "savings_pct": 79.5,
+              "availability": "medium"
+            },
+            {
+              "sku": "Standard_NC80adis_H100_v5",
+              "gpu": "H100 (80GB)",
+              "gpu_count": 2,
+              "vcpus": 80,
+              "ram_gb": 640,
+              "spot_price_usd_hr": 12.6292,
+              "ondemand_price_usd_hr": 17.45,
+              "savings_pct": 27.6,
+              "availability": "low"
+            },
+            {
+              "sku": "Standard_NC4as_T4_v3",
+              "gpu": "Tesla T4 (16GB)",
+              "gpu_count": 1,
+              "vcpus": 4,
+              "ram_gb": 28,
+              "spot_price_usd_hr": 0.346,
+              "ondemand_price_usd_hr": 0.799,
+              "savings_pct": 56.7,
+              "availability": "medium"
+            },
+            {
+              "sku": "Standard_NC6s_v3",
+              "gpu": "Tesla V100 (16GB)",
+              "gpu_count": 1,
+              "vcpus": 6,
+              "ram_gb": 112,
+              "spot_price_usd_hr": 0.6552,
+              "ondemand_price_usd_hr": 3.865,
+              "savings_pct": 83.0,
+              "availability": "medium"
+            },
+            {
+              "sku": "Standard_NC12s_v3",
+              "gpu": "Tesla V100 (16GB)",
+              "gpu_count": 2,
+              "vcpus": 12,
+              "ram_gb": 224,
+              "spot_price_usd_hr": 1.2935,
+              "ondemand_price_usd_hr": 7.73,
+              "savings_pct": 83.3,
+              "availability": "medium"
+            },
+            {
+              "sku": "Standard_NC16as_T4_v3",
+              "gpu": "Tesla T4 (16GB)",
+              "gpu_count": 1,
+              "vcpus": 16,
+              "ram_gb": 110,
+              "spot_price_usd_hr": 0.858,
+              "ondemand_price_usd_hr": 2.145,
+              "savings_pct": 60.0,
+              "availability": "medium"
+            },
+            {
+              "sku": "Standard_NC96ads_A100_v4",
+              "gpu": "A100 (80GB)",
+              "gpu_count": 4,
+              "vcpus": 96,
+              "ram_gb": 880,
+              "spot_price_usd_hr": 3.9515,
+              "ondemand_price_usd_hr": 22.781,
+              "savings_pct": 82.7,
+              "availability": "medium"
+            },
+            {
+              "sku": "Standard_NC24s_v3",
+              "gpu": "Tesla V100 (16GB)",
+              "gpu_count": 4,
+              "vcpus": 24,
+              "ram_gb": 448,
+              "spot_price_usd_hr": 2.6077,
+              "ondemand_price_usd_hr": 14.356,
+              "savings_pct": 81.8,
+              "availability": "medium"
+            },
+            {
+              "sku": "Standard_NC24rs_v3",
+              "gpu": "Tesla V100 (16GB)",
+              "gpu_count": 4,
+              "vcpus": 24,
+              "ram_gb": 448,
+              "spot_price_usd_hr": 2.8525,
+              "ondemand_price_usd_hr": 15.792,
+              "savings_pct": 81.9,
+              "availability": "medium"
+            },
+            {
+              "sku": "Standard_NC8as_T4_v3",
+              "gpu": "Tesla T4 (16GB)",
+              "gpu_count": 1,
+              "vcpus": 8,
+              "ram_gb": 56,
+              "spot_price_usd_hr": 0.4977,
+              "ondemand_price_usd_hr": 1.248,
+              "savings_pct": 60.1,
+              "availability": "medium"
+            },
+            {
+              "sku": "Standard_NV8as_v4",
+              "gpu": "Radeon MI25 (8GB)",
+              "gpu_count": 1,
+              "vcpus": 8,
+              "ram_gb": 28,
+              "spot_price_usd_hr": 0.1108,
+              "ondemand_price_usd_hr": 0.95,
+              "savings_pct": 88.3,
+              "availability": "medium"
+            },
+            {
+              "sku": "Standard_NV4as_v4",
+              "gpu": "Radeon MI25 (4GB)",
+              "gpu_count": 1,
+              "vcpus": 4,
+              "ram_gb": 14,
+              "spot_price_usd_hr": 0.052,
+              "ondemand_price_usd_hr": 0.291,
+              "savings_pct": 82.1,
+              "availability": "medium"
+            },
+            {
+              "sku": "Standard_NV18ads_A10_v5",
+              "gpu": "A10 (18GB slice)",
+              "gpu_count": 1,
+              "vcpus": 18,
+              "ram_gb": 220,
+              "spot_price_usd_hr": 0.3879,
+              "ondemand_price_usd_hr": 2.0,
+              "savings_pct": 80.6,
+              "availability": "medium"
+            },
+            {
+              "sku": "Standard_NV32as_v4",
+              "gpu": "Radeon MI25 (32GB)",
+              "gpu_count": 1,
+              "vcpus": 32,
+              "ram_gb": 112,
+              "spot_price_usd_hr": 0.4147,
+              "ondemand_price_usd_hr": 3.802,
+              "savings_pct": 89.1,
+              "availability": "medium"
+            },
+            {
+              "sku": "Standard_NV6ads_A10_v5",
+              "gpu": "A10 (6GB slice)",
+              "gpu_count": 1,
+              "vcpus": 6,
+              "ram_gb": 55,
+              "spot_price_usd_hr": 0.1036,
+              "ondemand_price_usd_hr": 0.567,
+              "savings_pct": 81.7,
+              "availability": "medium"
+            },
+            {
+              "sku": "Standard_NV12s_v3",
+              "gpu": "Tesla M60 (8GB)",
+              "gpu_count": 1,
+              "vcpus": 12,
+              "ram_gb": 112,
+              "spot_price_usd_hr": 0.2665,
+              "ondemand_price_usd_hr": 1.425,
+              "savings_pct": 81.3,
+              "availability": "medium"
+            },
+            {
+              "sku": "Standard_NV24s_v3",
+              "gpu": "Tesla M60 (16GB)",
+              "gpu_count": 2,
+              "vcpus": 24,
+              "ram_gb": 224,
+              "spot_price_usd_hr": 0.539,
+              "ondemand_price_usd_hr": 3.954,
+              "savings_pct": 86.4,
+              "availability": "medium"
+            },
+            {
+              "sku": "Standard_NV16as_v4",
+              "gpu": "Radeon MI25 (16GB)",
+              "gpu_count": 1,
+              "vcpus": 16,
+              "ram_gb": 56,
+              "spot_price_usd_hr": 0.2178,
+              "ondemand_price_usd_hr": 1.165,
+              "savings_pct": 81.3,
+              "availability": "medium"
+            },
+            {
+              "sku": "Standard_NV48s_v3",
+              "gpu": "Tesla M60 (32GB)",
+              "gpu_count": 4,
+              "vcpus": 48,
+              "ram_gb": 448,
+              "spot_price_usd_hr": 1.0676,
+              "ondemand_price_usd_hr": 5.7,
+              "savings_pct": 81.3,
+              "availability": "medium"
+            },
+            {
+              "sku": "Standard_NV36ads_A10_v5",
+              "gpu": "A10 (24GB)",
+              "gpu_count": 1,
+              "vcpus": 36,
+              "ram_gb": 440,
+              "spot_price_usd_hr": 0.7567,
+              "ondemand_price_usd_hr": 5.656,
+              "savings_pct": 86.6,
+              "availability": "medium"
+            },
+            {
+              "sku": "Standard_NV12ads_A10_v5",
+              "gpu": "A10 (12GB slice)",
+              "gpu_count": 1,
+              "vcpus": 12,
+              "ram_gb": 110,
+              "spot_price_usd_hr": 0.2102,
+              "ondemand_price_usd_hr": 1.687,
+              "savings_pct": 87.5,
+              "availability": "medium"
+            }
+          ]
+        },
+        "uk-south-2": {
+          "name": "UK South AZ-2",
+          "gpu_spot_prices": [
+            {
+              "sku": "Standard_NC64as_T4_v3",
+              "gpu": "Tesla T4 (16GB)",
+              "gpu_count": 4,
+              "vcpus": 64,
+              "ram_gb": 440,
+              "spot_price_usd_hr": 2.9561,
+              "ondemand_price_usd_hr": 5.092,
+              "savings_pct": 41.9,
+              "availability": "medium"
+            },
+            {
+              "sku": "Standard_NC48ads_A100_v4",
+              "gpu": "A100 (80GB)",
+              "gpu_count": 2,
+              "vcpus": 48,
+              "ram_gb": 440,
+              "spot_price_usd_hr": 1.8808,
+              "ondemand_price_usd_hr": 9.183,
+              "savings_pct": 79.5,
+              "availability": "high"
+            },
+            {
+              "sku": "Standard_NC80adis_H100_v5",
+              "gpu": "H100 (80GB)",
+              "gpu_count": 2,
+              "vcpus": 80,
+              "ram_gb": 640,
+              "spot_price_usd_hr": 12.7439,
+              "ondemand_price_usd_hr": 17.45,
+              "savings_pct": 27.0,
+              "availability": "low"
+            },
+            {
+              "sku": "Standard_NC4as_T4_v3",
+              "gpu": "Tesla T4 (16GB)",
+              "gpu_count": 1,
+              "vcpus": 4,
+              "ram_gb": 28,
+              "spot_price_usd_hr": 0.3686,
+              "ondemand_price_usd_hr": 0.799,
+              "savings_pct": 53.9,
+              "availability": "medium"
+            },
+            {
+              "sku": "Standard_NC6s_v3",
+              "gpu": "Tesla V100 (16GB)",
+              "gpu_count": 1,
+              "vcpus": 6,
+              "ram_gb": 112,
+              "spot_price_usd_hr": 0.6641,
+              "ondemand_price_usd_hr": 3.865,
+              "savings_pct": 82.8,
+              "availability": "high"
+            },
+            {
+              "sku": "Standard_NC12s_v3",
+              "gpu": "Tesla V100 (16GB)",
+              "gpu_count": 2,
+              "vcpus": 12,
+              "ram_gb": 224,
+              "spot_price_usd_hr": 1.3805,
+              "ondemand_price_usd_hr": 7.73,
+              "savings_pct": 82.1,
+              "availability": "high"
+            },
+            {
+              "sku": "Standard_NC16as_T4_v3",
+              "gpu": "Tesla T4 (16GB)",
+              "gpu_count": 1,
+              "vcpus": 16,
+              "ram_gb": 110,
+              "spot_price_usd_hr": 0.8631,
+              "ondemand_price_usd_hr": 2.145,
+              "savings_pct": 59.8,
+              "availability": "high"
+            },
+            {
+              "sku": "Standard_NC96ads_A100_v4",
+              "gpu": "A100 (80GB)",
+              "gpu_count": 4,
+              "vcpus": 96,
+              "ram_gb": 880,
+              "spot_price_usd_hr": 3.9937,
+              "ondemand_price_usd_hr": 22.781,
+              "savings_pct": 82.5,
+              "availability": "high"
+            },
+            {
+              "sku": "Standard_NC24s_v3",
+              "gpu": "Tesla V100 (16GB)",
+              "gpu_count": 4,
+              "vcpus": 24,
+              "ram_gb": 448,
+              "spot_price_usd_hr": 2.6609,
+              "ondemand_price_usd_hr": 14.356,
+              "savings_pct": 81.5,
+              "availability": "high"
+            },
+            {
+              "sku": "Standard_NC24rs_v3",
+              "gpu": "Tesla V100 (16GB)",
+              "gpu_count": 4,
+              "vcpus": 24,
+              "ram_gb": 448,
+              "spot_price_usd_hr": 2.8995,
+              "ondemand_price_usd_hr": 15.792,
+              "savings_pct": 81.6,
+              "availability": "high"
+            },
+            {
+              "sku": "Standard_NC8as_T4_v3",
+              "gpu": "Tesla T4 (16GB)",
+              "gpu_count": 1,
+              "vcpus": 8,
+              "ram_gb": 56,
+              "spot_price_usd_hr": 0.526,
+              "ondemand_price_usd_hr": 1.248,
+              "savings_pct": 57.8,
+              "availability": "high"
+            },
+            {
+              "sku": "Standard_NV8as_v4",
+              "gpu": "Radeon MI25 (8GB)",
+              "gpu_count": 1,
+              "vcpus": 8,
+              "ram_gb": 28,
+              "spot_price_usd_hr": 0.108,
+              "ondemand_price_usd_hr": 0.95,
+              "savings_pct": 88.6,
+              "availability": "high"
+            },
+            {
+              "sku": "Standard_NV4as_v4",
+              "gpu": "Radeon MI25 (4GB)",
+              "gpu_count": 1,
+              "vcpus": 4,
+              "ram_gb": 14,
+              "spot_price_usd_hr": 0.0556,
+              "ondemand_price_usd_hr": 0.291,
+              "savings_pct": 80.9,
+              "availability": "high"
+            },
+            {
+              "sku": "Standard_NV18ads_A10_v5",
+              "gpu": "A10 (18GB slice)",
+              "gpu_count": 1,
+              "vcpus": 18,
+              "ram_gb": 220,
+              "spot_price_usd_hr": 0.3846,
+              "ondemand_price_usd_hr": 2.0,
+              "savings_pct": 80.8,
+              "availability": "high"
+            },
+            {
+              "sku": "Standard_NV32as_v4",
+              "gpu": "Radeon MI25 (32GB)",
+              "gpu_count": 1,
+              "vcpus": 32,
+              "ram_gb": 112,
+              "spot_price_usd_hr": 0.4254,
+              "ondemand_price_usd_hr": 3.802,
+              "savings_pct": 88.8,
+              "availability": "high"
+            },
+            {
+              "sku": "Standard_NV6ads_A10_v5",
+              "gpu": "A10 (6GB slice)",
+              "gpu_count": 1,
+              "vcpus": 6,
+              "ram_gb": 55,
+              "spot_price_usd_hr": 0.1088,
+              "ondemand_price_usd_hr": 0.567,
+              "savings_pct": 80.8,
+              "availability": "high"
+            },
+            {
+              "sku": "Standard_NV12s_v3",
+              "gpu": "Tesla M60 (8GB)",
+              "gpu_count": 1,
+              "vcpus": 12,
+              "ram_gb": 112,
+              "spot_price_usd_hr": 0.265,
+              "ondemand_price_usd_hr": 1.425,
+              "savings_pct": 81.4,
+              "availability": "high"
+            },
+            {
+              "sku": "Standard_NV24s_v3",
+              "gpu": "Tesla M60 (16GB)",
+              "gpu_count": 2,
+              "vcpus": 24,
+              "ram_gb": 224,
+              "spot_price_usd_hr": 0.5279,
+              "ondemand_price_usd_hr": 3.954,
+              "savings_pct": 86.6,
+              "availability": "high"
+            },
+            {
+              "sku": "Standard_NV16as_v4",
+              "gpu": "Radeon MI25 (16GB)",
+              "gpu_count": 1,
+              "vcpus": 16,
+              "ram_gb": 56,
+              "spot_price_usd_hr": 0.2067,
+              "ondemand_price_usd_hr": 1.165,
+              "savings_pct": 82.3,
+              "availability": "high"
+            },
+            {
+              "sku": "Standard_NV48s_v3",
+              "gpu": "Tesla M60 (32GB)",
+              "gpu_count": 4,
+              "vcpus": 48,
+              "ram_gb": 448,
+              "spot_price_usd_hr": 1.0493,
+              "ondemand_price_usd_hr": 5.7,
+              "savings_pct": 81.6,
+              "availability": "high"
+            },
+            {
+              "sku": "Standard_NV36ads_A10_v5",
+              "gpu": "A10 (24GB)",
+              "gpu_count": 1,
+              "vcpus": 36,
+              "ram_gb": 440,
+              "spot_price_usd_hr": 0.7722,
+              "ondemand_price_usd_hr": 5.656,
+              "savings_pct": 86.3,
+              "availability": "high"
+            },
+            {
+              "sku": "Standard_NV12ads_A10_v5",
+              "gpu": "A10 (12GB slice)",
+              "gpu_count": 1,
+              "vcpus": 12,
+              "ram_gb": 110,
+              "spot_price_usd_hr": 0.2009,
+              "ondemand_price_usd_hr": 1.687,
+              "savings_pct": 88.1,
+              "availability": "high"
+            }
+          ]
+        },
+        "uk-south-3": {
+          "name": "UK South AZ-3",
+          "gpu_spot_prices": [
+            {
+              "sku": "Standard_NC64as_T4_v3",
+              "gpu": "Tesla T4 (16GB)",
+              "gpu_count": 4,
+              "vcpus": 64,
+              "ram_gb": 440,
+              "spot_price_usd_hr": 2.8726,
+              "ondemand_price_usd_hr": 5.092,
+              "savings_pct": 43.6,
+              "availability": "medium"
+            },
+            {
+              "sku": "Standard_NC48ads_A100_v4",
+              "gpu": "A100 (80GB)",
+              "gpu_count": 2,
+              "vcpus": 48,
+              "ram_gb": 440,
+              "spot_price_usd_hr": 1.9688,
+              "ondemand_price_usd_hr": 9.183,
+              "savings_pct": 78.6,
+              "availability": "high"
+            },
+            {
+              "sku": "Standard_NC80adis_H100_v5",
+              "gpu": "H100 (80GB)",
+              "gpu_count": 2,
+              "vcpus": 80,
+              "ram_gb": 640,
+              "spot_price_usd_hr": 11.9854,
+              "ondemand_price_usd_hr": 17.45,
+              "savings_pct": 31.3,
+              "availability": "medium"
+            },
+            {
+              "sku": "Standard_NC4as_T4_v3",
+              "gpu": "Tesla T4 (16GB)",
+              "gpu_count": 1,
+              "vcpus": 4,
+              "ram_gb": 28,
+              "spot_price_usd_hr": 0.3727,
+              "ondemand_price_usd_hr": 0.799,
+              "savings_pct": 53.4,
+              "availability": "medium"
+            },
+            {
+              "sku": "Standard_NC6s_v3",
+              "gpu": "Tesla V100 (16GB)",
+              "gpu_count": 1,
+              "vcpus": 6,
+              "ram_gb": 112,
+              "spot_price_usd_hr": 0.6608,
+              "ondemand_price_usd_hr": 3.865,
+              "savings_pct": 82.9,
+              "availability": "high"
+            },
+            {
+              "sku": "Standard_NC12s_v3",
+              "gpu": "Tesla V100 (16GB)",
+              "gpu_count": 2,
+              "vcpus": 12,
+              "ram_gb": 224,
+              "spot_price_usd_hr": 1.2987,
+              "ondemand_price_usd_hr": 7.73,
+              "savings_pct": 83.2,
+              "availability": "high"
+            },
+            {
+              "sku": "Standard_NC16as_T4_v3",
+              "gpu": "Tesla T4 (16GB)",
+              "gpu_count": 1,
+              "vcpus": 16,
+              "ram_gb": 110,
+              "spot_price_usd_hr": 0.7959,
+              "ondemand_price_usd_hr": 2.145,
+              "savings_pct": 62.9,
+              "availability": "high"
+            },
+            {
+              "sku": "Standard_NC96ads_A100_v4",
+              "gpu": "A100 (80GB)",
+              "gpu_count": 4,
+              "vcpus": 96,
+              "ram_gb": 880,
+              "spot_price_usd_hr": 3.8698,
+              "ondemand_price_usd_hr": 22.781,
+              "savings_pct": 83.0,
+              "availability": "high"
+            },
+            {
+              "sku": "Standard_NC24s_v3",
+              "gpu": "Tesla V100 (16GB)",
+              "gpu_count": 4,
+              "vcpus": 24,
+              "ram_gb": 448,
+              "spot_price_usd_hr": 2.7293,
+              "ondemand_price_usd_hr": 14.356,
+              "savings_pct": 81.0,
+              "availability": "high"
+            },
+            {
+              "sku": "Standard_NC24rs_v3",
+              "gpu": "Tesla V100 (16GB)",
+              "gpu_count": 4,
+              "vcpus": 24,
+              "ram_gb": 448,
+              "spot_price_usd_hr": 2.9622,
+              "ondemand_price_usd_hr": 15.792,
+              "savings_pct": 81.2,
+              "availability": "high"
+            },
+            {
+              "sku": "Standard_NC8as_T4_v3",
+              "gpu": "Tesla T4 (16GB)",
+              "gpu_count": 1,
+              "vcpus": 8,
+              "ram_gb": 56,
+              "spot_price_usd_hr": 0.5242,
+              "ondemand_price_usd_hr": 1.248,
+              "savings_pct": 58.0,
+              "availability": "high"
+            },
+            {
+              "sku": "Standard_NV8as_v4",
+              "gpu": "Radeon MI25 (8GB)",
+              "gpu_count": 1,
+              "vcpus": 8,
+              "ram_gb": 28,
+              "spot_price_usd_hr": 0.1046,
+              "ondemand_price_usd_hr": 0.95,
+              "savings_pct": 89.0,
+              "availability": "high"
+            },
+            {
+              "sku": "Standard_NV4as_v4",
+              "gpu": "Radeon MI25 (4GB)",
+              "gpu_count": 1,
+              "vcpus": 4,
+              "ram_gb": 14,
+              "spot_price_usd_hr": 0.056,
+              "ondemand_price_usd_hr": 0.291,
+              "savings_pct": 80.8,
+              "availability": "high"
+            },
+            {
+              "sku": "Standard_NV18ads_A10_v5",
+              "gpu": "A10 (18GB slice)",
+              "gpu_count": 1,
+              "vcpus": 18,
+              "ram_gb": 220,
+              "spot_price_usd_hr": 0.3742,
+              "ondemand_price_usd_hr": 2.0,
+              "savings_pct": 81.3,
+              "availability": "high"
+            },
+            {
+              "sku": "Standard_NV32as_v4",
+              "gpu": "Radeon MI25 (32GB)",
+              "gpu_count": 1,
+              "vcpus": 32,
+              "ram_gb": 112,
+              "spot_price_usd_hr": 0.4311,
+              "ondemand_price_usd_hr": 3.802,
+              "savings_pct": 88.7,
+              "availability": "high"
+            },
+            {
+              "sku": "Standard_NV6ads_A10_v5",
+              "gpu": "A10 (6GB slice)",
+              "gpu_count": 1,
+              "vcpus": 6,
+              "ram_gb": 55,
+              "spot_price_usd_hr": 0.102,
+              "ondemand_price_usd_hr": 0.567,
+              "savings_pct": 82.0,
+              "availability": "high"
+            },
+            {
+              "sku": "Standard_NV12s_v3",
+              "gpu": "Tesla M60 (8GB)",
+              "gpu_count": 1,
+              "vcpus": 12,
+              "ram_gb": 112,
+              "spot_price_usd_hr": 0.2577,
+              "ondemand_price_usd_hr": 1.425,
+              "savings_pct": 81.9,
+              "availability": "high"
+            },
+            {
+              "sku": "Standard_NV24s_v3",
+              "gpu": "Tesla M60 (16GB)",
+              "gpu_count": 2,
+              "vcpus": 24,
+              "ram_gb": 224,
+              "spot_price_usd_hr": 0.5471,
+              "ondemand_price_usd_hr": 3.954,
+              "savings_pct": 86.2,
+              "availability": "high"
+            },
+            {
+              "sku": "Standard_NV16as_v4",
+              "gpu": "Radeon MI25 (16GB)",
+              "gpu_count": 1,
+              "vcpus": 16,
+              "ram_gb": 56,
+              "spot_price_usd_hr": 0.213,
+              "ondemand_price_usd_hr": 1.165,
+              "savings_pct": 81.7,
+              "availability": "high"
+            },
+            {
+              "sku": "Standard_NV48s_v3",
+              "gpu": "Tesla M60 (32GB)",
+              "gpu_count": 4,
+              "vcpus": 48,
+              "ram_gb": 448,
+              "spot_price_usd_hr": 1.0102,
+              "ondemand_price_usd_hr": 5.7,
+              "savings_pct": 82.3,
+              "availability": "high"
+            },
+            {
+              "sku": "Standard_NV36ads_A10_v5",
+              "gpu": "A10 (24GB)",
+              "gpu_count": 1,
+              "vcpus": 36,
+              "ram_gb": 440,
+              "spot_price_usd_hr": 0.7433,
+              "ondemand_price_usd_hr": 5.656,
+              "savings_pct": 86.9,
+              "availability": "high"
+            },
+            {
+              "sku": "Standard_NV12ads_A10_v5",
+              "gpu": "A10 (12GB slice)",
+              "gpu_count": 1,
+              "vcpus": 12,
+              "ram_gb": 110,
+              "spot_price_usd_hr": 0.2094,
+              "ondemand_price_usd_hr": 1.687,
+              "savings_pct": 87.6,
+              "availability": "high"
+            }
+          ]
+        }
+      },
+      "weather": {
+        "source": "open-meteo.com (LIVE)",
+        "current_temp_c": 12.4,
+        "current_wind_kmh": 14.5,
+        "current_solar_wm2": 0.0,
+        "hourly_forecast": [
+          {
+            "hour": "2026-02-21T00:00",
+            "temp_c": 9.2,
+            "wind_kmh": 14.3,
+            "solar_radiation_wm2": 0.0
+          },
+          {
+            "hour": "2026-02-21T01:00",
+            "temp_c": 9.4,
+            "wind_kmh": 12.8,
+            "solar_radiation_wm2": 0.0
+          },
+          {
+            "hour": "2026-02-21T02:00",
+            "temp_c": 9.5,
+            "wind_kmh": 13.6,
+            "solar_radiation_wm2": 0.0
+          },
+          {
+            "hour": "2026-02-21T03:00",
+            "temp_c": 9.5,
+            "wind_kmh": 14.1,
+            "solar_radiation_wm2": 0.0
+          },
+          {
+            "hour": "2026-02-21T04:00",
+            "temp_c": 10.0,
+            "wind_kmh": 15.0,
+            "solar_radiation_wm2": 0.0
+          },
+          {
+            "hour": "2026-02-21T05:00",
+            "temp_c": 10.3,
+            "wind_kmh": 16.1,
+            "solar_radiation_wm2": 0.0
+          },
+          {
+            "hour": "2026-02-21T06:00",
+            "temp_c": 10.3,
+            "wind_kmh": 17.2,
+            "solar_radiation_wm2": 0.0
+          },
+          {
+            "hour": "2026-02-21T07:00",
+            "temp_c": 10.1,
+            "wind_kmh": 15.1,
+            "solar_radiation_wm2": 0.0
+          },
+          {
+            "hour": "2026-02-21T08:00",
+            "temp_c": 10.1,
+            "wind_kmh": 12.9,
+            "solar_radiation_wm2": 0.8
+          },
+          {
+            "hour": "2026-02-21T09:00",
+            "temp_c": 10.6,
+            "wind_kmh": 15.5,
+            "solar_radiation_wm2": 5.8
+          },
+          {
+            "hour": "2026-02-21T10:00",
+            "temp_c": 11.0,
+            "wind_kmh": 15.6,
+            "solar_radiation_wm2": 4.0
+          },
+          {
+            "hour": "2026-02-21T11:00",
+            "temp_c": 11.6,
+            "wind_kmh": 15.2,
+            "solar_radiation_wm2": 6.5
+          },
+          {
+            "hour": "2026-02-21T12:00",
+            "temp_c": 12.7,
+            "wind_kmh": 16.8,
+            "solar_radiation_wm2": 24.8
+          },
+          {
+            "hour": "2026-02-21T13:00",
+            "temp_c": 13.9,
+            "wind_kmh": 18.5,
+            "solar_radiation_wm2": 53.2
+          },
+          {
+            "hour": "2026-02-21T14:00",
+            "temp_c": 14.3,
+            "wind_kmh": 16.9,
+            "solar_radiation_wm2": 30.8
+          },
+          {
+            "hour": "2026-02-21T15:00",
+            "temp_c": 13.0,
+            "wind_kmh": 16.6,
+            "solar_radiation_wm2": 2.5
+          },
+          {
+            "hour": "2026-02-21T16:00",
+            "temp_c": 13.2,
+            "wind_kmh": 18.5,
+            "solar_radiation_wm2": 1.5
+          },
+          {
+            "hour": "2026-02-21T17:00",
+            "temp_c": 13.2,
+            "wind_kmh": 14.7,
+            "solar_radiation_wm2": 0.0
+          },
+          {
+            "hour": "2026-02-21T18:00",
+            "temp_c": 12.9,
+            "wind_kmh": 13.1,
+            "solar_radiation_wm2": 0.0
+          },
+          {
+            "hour": "2026-02-21T19:00",
+            "temp_c": 12.8,
+            "wind_kmh": 13.6,
+            "solar_radiation_wm2": 0.0
+          },
+          {
+            "hour": "2026-02-21T20:00",
+            "temp_c": 12.7,
+            "wind_kmh": 13.8,
+            "solar_radiation_wm2": 0.0
+          },
+          {
+            "hour": "2026-02-21T21:00",
+            "temp_c": 12.5,
+            "wind_kmh": 13.9,
+            "solar_radiation_wm2": 0.0
+          },
+          {
+            "hour": "2026-02-21T22:00",
+            "temp_c": 12.4,
+            "wind_kmh": 15.5,
+            "solar_radiation_wm2": 0.0
+          },
+          {
+            "hour": "2026-02-21T23:00",
+            "temp_c": 12.4,
+            "wind_kmh": 14.5,
+            "solar_radiation_wm2": 0.0
+          }
+        ],
+        "cooling_advantage": "moderate - 12.4°C",
+        "renewable_potential": "moderate wind (14 km/h), low solar (0 W/m2)"
+      },
+      "carbon_intensity": {
+        "source": "carbonintensity.org.uk (LIVE)",
+        "current_gco2_kwh": 49,
+        "index": "low"
+      }
+    }
+  },
+  "scoring_weights": {
+    "w_price": 0.5,
+    "w_carbon": 0.2,
+    "w_availability": 0.15,
+    "w_cooling": 0.1,
+    "w_renewable": 0.05,
+    "formula": "score = w_price * norm_spot + w_carbon * norm_carbon + w_availability * (1-avail) + w_cooling * norm_cooling + w_renewable * (1-renew)"
+  },
+  "reference_prices": {
+    "currency_eur_usd": 0.92,
+    "avg_datacenter_pue": 1.2,
+    "kwh_per_gpu_hour": {
+      "v100": 0.3,
+      "t4": 0.07,
+      "a10": 0.15,
+      "a100": 0.4,
+      "h100": 0.7,
+      "mi25": 0.1,
+      "m60": 0.12
+    }
+  }
+}
