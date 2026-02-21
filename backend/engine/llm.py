@@ -1,7 +1,7 @@
 """
 NERVE Engine — Real LLM Integration
 Envoie le JSON scrappe live + preprompt au LLM pour decision.
-Supporte : Google Gemini, Anthropic Claude, OpenAI GPT.
+Supporte : Groq (LLaMA), Google Gemini, Anthropic Claude, OpenAI GPT.
 """
 
 from __future__ import annotations
@@ -34,7 +34,7 @@ def _get_provider() -> str:
 
 
 def _get_model() -> str:
-    defaults = {"gemini": "gemini-2.0-flash", "anthropic": "claude-sonnet-4-20250514", "openai": "gpt-4o-mini"}
+    defaults = {"groq": "llama-3.1-8b-instant", "gemini": "gemini-2.0-flash", "anthropic": "claude-sonnet-4-20250514", "openai": "gpt-4o-mini"}
     return os.getenv("NERVE_LLM_MODEL", defaults.get(_get_provider(), ""))
 
 
@@ -45,6 +45,26 @@ async def call_nerve_llm(scraped_json: str) -> dict:
     full_prompt = preprompt + "\n" + scraped_json
 
     log.info(f"LLM call — provider={provider}, prompt_len={len(full_prompt)}")
+
+    if provider == "groq":
+        api_key = os.getenv("GROQ_API_KEY")
+        if not api_key:
+            return {"status": "error", "message": "GROQ_API_KEY not set in .env"}
+        try:
+            import openai
+            client = openai.OpenAI(api_key=api_key, base_url="https://api.groq.com/openai/v1")
+            response = client.chat.completions.create(
+                model=_get_model(),
+                messages=[
+                    {"role": "system", "content": preprompt},
+                    {"role": "user", "content": scraped_json},
+                ],
+                max_tokens=4096,
+            )
+            return _extract_json(response.choices[0].message.content)
+        except Exception as e:
+            log.error(f"Groq API error: {e}")
+            return {"status": "error", "message": str(e)}
 
     if provider == "gemini":
         api_key = os.getenv("GEMINI_API_KEY")
@@ -102,7 +122,7 @@ async def call_nerve_llm(scraped_json: str) -> dict:
 
     return {
         "status": "no_provider",
-        "message": f"Set NERVE_LLM_PROVIDER=gemini|anthropic|openai in .env",
+        "message": f"Set NERVE_LLM_PROVIDER=groq|gemini|anthropic|openai in .env",
         "prompt_length": len(full_prompt),
     }
 
@@ -131,17 +151,31 @@ def _extract_json(text: str) -> dict:
 
 
 async def build_llm_context() -> str:
-    """Build JSON context from live scraped data for LLM."""
+    """Build compact JSON context from live scraped data for LLM."""
     from engine.scraper import get_cache
     cache = get_cache()
+
+    # Compact: only top-5 cheapest GPUs per region + weather + carbon
+    compact_prices = {}
+    for region_id, gpus in cache.get("gpu_prices", {}).items():
+        if not gpus:
+            continue
+        sorted_gpus = sorted(gpus, key=lambda g: g.get("spot_price_usd_hr", 999))[:5]
+        compact_prices[region_id] = [
+            {
+                "sku": g["sku"],
+                "gpu": g["gpu_name"],
+                "spot": round(g["spot_price_usd_hr"], 4),
+                "ondemand": round(g["ondemand_price_usd_hr"], 2),
+                "save%": round(g["savings_pct"], 1),
+            }
+            for g in sorted_gpus
+        ]
+
     context = {
-        "metadata": {
-            "scrape_timestamp": cache.get("last_scrape"),
-            "scrape_count": cache.get("scrape_count"),
-            "source": "NERVE live scraper",
-        },
-        "gpu_prices": cache.get("gpu_prices", {}),
+        "ts": cache.get("last_scrape"),
+        "prices": compact_prices,
         "weather": cache.get("weather", {}),
         "carbon": cache.get("carbon", {}),
     }
-    return json.dumps(context, indent=2, default=str)
+    return json.dumps(context, separators=(",", ":"), default=str)
