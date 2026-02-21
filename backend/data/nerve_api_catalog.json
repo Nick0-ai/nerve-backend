@@ -1,197 +1,83 @@
 {
-  "name": "NERVE — API & Server Catalog",
-  "description": "Complete list of all APIs, data sources, and GPU servers analyzed by NERVE in real-time.",
-  "version": "2.0.0",
-  "last_updated": "2026-02-21",
-  "data_sources": {
-    "azure_retail_prices": {
-      "url": "https://prices.azure.com/api/retail/prices",
-      "auth": "none (public API)",
-      "rate_limit": "unlimited",
-      "data": "GPU Spot + On-Demand prices per region and SKU",
-      "scrape_interval_sec": 60,
-      "regions_queried": ["francecentral", "westeurope", "uksouth"],
-      "sku_families_queried": ["Standard_NC (compute GPU)", "Standard_NV (visualization GPU)", "Standard_ND (AI/ML GPU)"]
-    },
-    "open_meteo": {
-      "url": "https://api.open-meteo.com/v1/forecast",
-      "auth": "none (public API)",
-      "rate_limit": "10000 req/day",
-      "data": "Hourly temperature, wind speed, direct solar radiation",
-      "scrape_interval_sec": 60,
-      "locations": {
-        "francecentral": {"lat": 48.8566, "lng": 2.3522, "city": "Paris"},
-        "westeurope": {"lat": 52.3676, "lng": 4.9041, "city": "Amsterdam"},
-        "uksouth": {"lat": 51.5074, "lng": -0.1278, "city": "London"}
-      }
-    },
-    "carbon_intensity_uk": {
-      "url": "https://api.carbonintensity.org.uk/intensity",
-      "auth": "none (public API)",
-      "rate_limit": "unlimited",
-      "data": "Real-time carbon intensity gCO2/kWh for UK grid",
-      "scrape_interval_sec": 60,
-      "coverage": "UK only (uksouth region)"
-    },
-    "nerve_carbon_model": {
-      "type": "physics-based model",
-      "data": "Real-time carbon estimation for FR/NL using live weather data",
-      "inputs": "Open-Meteo wind speed + solar radiation",
-      "model": "Grid mix weighted average (nuclear/hydro/wind/solar/gas/coal emission factors)",
-      "coverage": "francecentral, westeurope",
-      "grid_compositions": {
-        "france": "70% nuclear, 12% hydro, 10% wind (variable), 5% solar (variable), 8% gas",
-        "netherlands": "3% nuclear, 22% wind (variable), 12% solar (variable), 52% gas, 5% coal"
-      },
-      "emission_factors_gco2_kwh": {
-        "nuclear": 12, "hydro": 24, "wind": 11, "solar": 45, "gas": 490, "coal": 820
-      }
-    }
-  },
-  "regions": [
-    {
-      "id": "francecentral",
-      "name": "France Central",
-      "cloud_provider": "Azure",
-      "location": "Paris, France",
-      "coordinates": {"lat": 48.8566, "lng": 2.3522},
-      "timezone": "Europe/Paris",
-      "availability_zones": ["fr-central-1", "fr-central-2", "fr-central-3"],
-      "grid_carbon_avg_gco2": 56,
-      "grid_type": "Nuclear-dominated (low carbon)"
-    },
-    {
-      "id": "westeurope",
-      "name": "West Europe",
-      "cloud_provider": "Azure",
-      "location": "Amsterdam, Netherlands",
-      "coordinates": {"lat": 52.3676, "lng": 4.9041},
-      "timezone": "Europe/Amsterdam",
-      "availability_zones": ["we-1", "we-2", "we-3"],
-      "grid_carbon_avg_gco2": 328,
-      "grid_type": "Gas-dominated (high carbon)"
-    },
-    {
-      "id": "uksouth",
-      "name": "UK South",
-      "cloud_provider": "Azure",
-      "location": "London, UK",
-      "coordinates": {"lat": 51.5074, "lng": -0.1278},
-      "timezone": "Europe/London",
-      "availability_zones": ["uk-south-1", "uk-south-2", "uk-south-3"],
-      "grid_carbon_avg_gco2": 120,
-      "grid_type": "Mixed (gas + wind + nuclear)"
-    }
-  ],
-  "gpu_catalog": {
-    "compute_gpus": [
-      {
-        "family": "NC-series v3",
-        "gpu": "NVIDIA Tesla V100 (16GB HBM2)",
-        "skus": ["Standard_NC6s_v3", "Standard_NC12s_v3", "Standard_NC24s_v3", "Standard_NC24rs_v3"],
-        "gpu_counts": [1, 2, 4, 4],
-        "vcpus": [6, 12, 24, 24],
-        "ram_gb": [112, 224, 448, 448],
-        "use_case": "Deep learning training, HPC"
-      },
-      {
-        "family": "NC-series T4 v3",
-        "gpu": "NVIDIA Tesla T4 (16GB GDDR6)",
-        "skus": ["Standard_NC4as_T4_v3", "Standard_NC8as_T4_v3", "Standard_NC16as_T4_v3", "Standard_NC64as_T4_v3"],
-        "gpu_counts": [1, 1, 1, 4],
-        "vcpus": [4, 8, 16, 64],
-        "ram_gb": [28, 56, 110, 440],
-        "use_case": "Inference, fine-tuning, cost-effective training"
-      },
-      {
-        "family": "NC-series A10 v4",
-        "gpu": "NVIDIA A10 (24GB GDDR6)",
-        "skus": ["Standard_NC8ads_A10_v4", "Standard_NC16ads_A10_v4", "Standard_NC32ads_A10_v4"],
-        "gpu_counts": [1, 1, 2],
-        "vcpus": [8, 16, 32],
-        "ram_gb": [55, 110, 220],
-        "use_case": "Mixed inference + training"
-      },
-      {
-        "family": "NC-series A100 v4",
-        "gpu": "NVIDIA A100 (80GB HBM2e)",
-        "skus": ["Standard_NC48ads_A100_v4", "Standard_NC96ads_A100_v4"],
-        "gpu_counts": [2, 4],
-        "vcpus": [48, 96],
-        "ram_gb": [440, 880],
-        "use_case": "Large model training, multi-GPU distributed"
-      },
-      {
-        "family": "NC-series H100 v5",
-        "gpu": "NVIDIA H100 (80GB HBM3)",
-        "skus": ["Standard_NCC40ads_H100_v5", "Standard_NC80adis_H100_v5"],
-        "gpu_counts": [1, 2],
-        "vcpus": [40, 80],
-        "ram_gb": [320, 640],
-        "use_case": "Frontier model training, LLM fine-tuning"
-      }
-    ],
-    "visualization_gpus": [
-      {
-        "family": "NV-series A10 v5",
-        "gpu": "NVIDIA A10 (partitioned 6-24GB)",
-        "skus": ["Standard_NV6ads_A10_v5", "Standard_NV12ads_A10_v5", "Standard_NV18ads_A10_v5", "Standard_NV36ads_A10_v5"],
-        "use_case": "Visualization, rendering, light inference"
-      },
-      {
-        "family": "NV-series v4",
-        "gpu": "AMD Radeon MI25 (partitioned 4-32GB)",
-        "skus": ["Standard_NV4as_v4", "Standard_NV8as_v4", "Standard_NV16as_v4", "Standard_NV32as_v4"],
-        "use_case": "Desktop virtualization, light rendering"
-      },
-      {
-        "family": "NV-series v3",
-        "gpu": "NVIDIA Tesla M60 (8-32GB)",
-        "skus": ["Standard_NV12s_v3", "Standard_NV24s_v3", "Standard_NV48s_v3"],
-        "use_case": "Legacy visualization workloads"
-      }
-    ],
-    "total_sku_count": 25,
-    "total_gpus_monitored_per_scrape": "~69 (varies by region availability)"
-  },
-  "nerve_scoring_algorithm": {
-    "formula": "score = w_price * norm_price + w_carbon * norm_carbon + w_avail * (1-avail_score) + w_cooling * norm_cooling + w_renew * (1-renew_score)",
-    "weights": {
-      "price": 0.50,
-      "carbon": 0.20,
-      "availability": 0.15,
-      "cooling": 0.10,
-      "renewable": 0.05
-    },
-    "interpretation": "Lower score = better placement",
-    "inputs": {
-      "price": "Real-time Azure Spot price (normalized 0-1 over $15/h)",
-      "carbon": "Live carbon intensity (normalized 0-1 over 500 gCO2/kWh)",
-      "availability": "Estimated from price tier heuristics",
-      "cooling": "Live temperature from Open-Meteo (normalized 0-1 over 40°C)",
-      "renewable": "Live wind speed from Open-Meteo (normalized 0-1 over 50 km/h)"
-    }
-  },
-  "features": {
-    "az_hopping": {
-      "description": "Intra-region migration between Availability Zones on Spot interruption",
-      "latency": "<1ms (same city)",
-      "mechanism": "kubectl cordon + new Spot provision + checkpoint restore"
-    },
-    "time_shifting": {
-      "description": "Delay job start to optimal time window (night hours = cheaper Spot + lower carbon)",
-      "data_source": "Live scraped prices + weather-based carbon curves",
-      "threshold": "Recommended if >5% price reduction possible"
-    },
-    "smart_checkpointing": {
-      "description": "Auto-save PyTorch weights to S3 on Spot interruption notice",
-      "upload_speed": "1.2 Gbps to S3",
-      "resume_guarantee": "<90 seconds total downtime"
-    },
-    "llm_analysis": {
-      "description": "Send live scraped data to LLM (Claude/GPT) for natural language recommendations",
-      "providers": ["Anthropic Claude (claude-sonnet-4-20250514)", "OpenAI GPT (gpt-4o-mini)"],
-      "configured_via": ".env (NERVE_LLM_PROVIDER, API key)"
-    }
-  }
+  "name": "NERVE — GPU Server Catalog",
+  "description": "Complete inventory of all GPU servers analyzed by NERVE in real-time across European Azure datacenters.",
+  "version": "2.1.0",
+  "analysis_date": "2026-02-21",
+  "data_source": "Azure Retail Prices API (https://prices.azure.com/api/retail/prices)",
+  "scrape_method": "Live API scraping every 60 seconds — zero hardcoded data",
+  "total_servers_analyzed": 69,
+  "regions_covered": 3,
+  "servers": [
+    {"server": "Standard_NC6s_v3", "gpu": "NVIDIA Tesla V100 (16GB)", "gpu_count": 1, "location": "Paris, France", "region": "francecentral", "datacenter_coordinates": {"lat": 48.8566, "lng": 2.3522}},
+    {"server": "Standard_NC12s_v3", "gpu": "NVIDIA Tesla V100 (16GB)", "gpu_count": 2, "location": "Paris, France", "region": "francecentral", "datacenter_coordinates": {"lat": 48.8566, "lng": 2.3522}},
+    {"server": "Standard_NC24s_v3", "gpu": "NVIDIA Tesla V100 (16GB)", "gpu_count": 4, "location": "Paris, France", "region": "francecentral", "datacenter_coordinates": {"lat": 48.8566, "lng": 2.3522}},
+    {"server": "Standard_NC24rs_v3", "gpu": "NVIDIA Tesla V100 (16GB)", "gpu_count": 4, "location": "Paris, France", "region": "francecentral", "datacenter_coordinates": {"lat": 48.8566, "lng": 2.3522}},
+    {"server": "Standard_NC4as_T4_v3", "gpu": "NVIDIA Tesla T4 (16GB)", "gpu_count": 1, "location": "Paris, France", "region": "francecentral", "datacenter_coordinates": {"lat": 48.8566, "lng": 2.3522}},
+    {"server": "Standard_NC8as_T4_v3", "gpu": "NVIDIA Tesla T4 (16GB)", "gpu_count": 1, "location": "Paris, France", "region": "francecentral", "datacenter_coordinates": {"lat": 48.8566, "lng": 2.3522}},
+    {"server": "Standard_NC16as_T4_v3", "gpu": "NVIDIA Tesla T4 (16GB)", "gpu_count": 1, "location": "Paris, France", "region": "francecentral", "datacenter_coordinates": {"lat": 48.8566, "lng": 2.3522}},
+    {"server": "Standard_NC64as_T4_v3", "gpu": "NVIDIA Tesla T4 (16GB)", "gpu_count": 4, "location": "Paris, France", "region": "francecentral", "datacenter_coordinates": {"lat": 48.8566, "lng": 2.3522}},
+    {"server": "Standard_NC48ads_A100_v4", "gpu": "NVIDIA A100 (80GB)", "gpu_count": 2, "location": "Paris, France", "region": "francecentral", "datacenter_coordinates": {"lat": 48.8566, "lng": 2.3522}},
+    {"server": "Standard_NC96ads_A100_v4", "gpu": "NVIDIA A100 (80GB)", "gpu_count": 4, "location": "Paris, France", "region": "francecentral", "datacenter_coordinates": {"lat": 48.8566, "lng": 2.3522}},
+    {"server": "Standard_NV6ads_A10_v5", "gpu": "NVIDIA A10 (6GB)", "gpu_count": 1, "location": "Paris, France", "region": "francecentral", "datacenter_coordinates": {"lat": 48.8566, "lng": 2.3522}},
+    {"server": "Standard_NV12ads_A10_v5", "gpu": "NVIDIA A10 (12GB)", "gpu_count": 1, "location": "Paris, France", "region": "francecentral", "datacenter_coordinates": {"lat": 48.8566, "lng": 2.3522}},
+    {"server": "Standard_NV18ads_A10_v5", "gpu": "NVIDIA A10 (18GB)", "gpu_count": 1, "location": "Paris, France", "region": "francecentral", "datacenter_coordinates": {"lat": 48.8566, "lng": 2.3522}},
+    {"server": "Standard_NV36ads_A10_v5", "gpu": "NVIDIA A10 (24GB)", "gpu_count": 1, "location": "Paris, France", "region": "francecentral", "datacenter_coordinates": {"lat": 48.8566, "lng": 2.3522}},
+    {"server": "Standard_NV4as_v4", "gpu": "AMD Radeon MI25 (4GB)", "gpu_count": 1, "location": "Paris, France", "region": "francecentral", "datacenter_coordinates": {"lat": 48.8566, "lng": 2.3522}},
+    {"server": "Standard_NV8as_v4", "gpu": "AMD Radeon MI25 (8GB)", "gpu_count": 1, "location": "Paris, France", "region": "francecentral", "datacenter_coordinates": {"lat": 48.8566, "lng": 2.3522}},
+    {"server": "Standard_NV16as_v4", "gpu": "AMD Radeon MI25 (16GB)", "gpu_count": 1, "location": "Paris, France", "region": "francecentral", "datacenter_coordinates": {"lat": 48.8566, "lng": 2.3522}},
+    {"server": "Standard_NV32as_v4", "gpu": "AMD Radeon MI25 (32GB)", "gpu_count": 1, "location": "Paris, France", "region": "francecentral", "datacenter_coordinates": {"lat": 48.8566, "lng": 2.3522}},
+    {"server": "Standard_NV12s_v3", "gpu": "NVIDIA Tesla M60 (8GB)", "gpu_count": 1, "location": "Paris, France", "region": "francecentral", "datacenter_coordinates": {"lat": 48.8566, "lng": 2.3522}},
+    {"server": "Standard_NV24s_v3", "gpu": "NVIDIA Tesla M60 (16GB)", "gpu_count": 2, "location": "Paris, France", "region": "francecentral", "datacenter_coordinates": {"lat": 48.8566, "lng": 2.3522}},
+    {"server": "Standard_NV48s_v3", "gpu": "NVIDIA Tesla M60 (32GB)", "gpu_count": 4, "location": "Paris, France", "region": "francecentral", "datacenter_coordinates": {"lat": 48.8566, "lng": 2.3522}},
+
+    {"server": "Standard_NC6s_v3", "gpu": "NVIDIA Tesla V100 (16GB)", "gpu_count": 1, "location": "Amsterdam, Netherlands", "region": "westeurope", "datacenter_coordinates": {"lat": 52.3676, "lng": 4.9041}},
+    {"server": "Standard_NC12s_v3", "gpu": "NVIDIA Tesla V100 (16GB)", "gpu_count": 2, "location": "Amsterdam, Netherlands", "region": "westeurope", "datacenter_coordinates": {"lat": 52.3676, "lng": 4.9041}},
+    {"server": "Standard_NC24s_v3", "gpu": "NVIDIA Tesla V100 (16GB)", "gpu_count": 4, "location": "Amsterdam, Netherlands", "region": "westeurope", "datacenter_coordinates": {"lat": 52.3676, "lng": 4.9041}},
+    {"server": "Standard_NC24rs_v3", "gpu": "NVIDIA Tesla V100 (16GB)", "gpu_count": 4, "location": "Amsterdam, Netherlands", "region": "westeurope", "datacenter_coordinates": {"lat": 52.3676, "lng": 4.9041}},
+    {"server": "Standard_NC4as_T4_v3", "gpu": "NVIDIA Tesla T4 (16GB)", "gpu_count": 1, "location": "Amsterdam, Netherlands", "region": "westeurope", "datacenter_coordinates": {"lat": 52.3676, "lng": 4.9041}},
+    {"server": "Standard_NC8as_T4_v3", "gpu": "NVIDIA Tesla T4 (16GB)", "gpu_count": 1, "location": "Amsterdam, Netherlands", "region": "westeurope", "datacenter_coordinates": {"lat": 52.3676, "lng": 4.9041}},
+    {"server": "Standard_NC16as_T4_v3", "gpu": "NVIDIA Tesla T4 (16GB)", "gpu_count": 1, "location": "Amsterdam, Netherlands", "region": "westeurope", "datacenter_coordinates": {"lat": 52.3676, "lng": 4.9041}},
+    {"server": "Standard_NC64as_T4_v3", "gpu": "NVIDIA Tesla T4 (16GB)", "gpu_count": 4, "location": "Amsterdam, Netherlands", "region": "westeurope", "datacenter_coordinates": {"lat": 52.3676, "lng": 4.9041}},
+    {"server": "Standard_NC8ads_A10_v4", "gpu": "NVIDIA A10 (24GB)", "gpu_count": 1, "location": "Amsterdam, Netherlands", "region": "westeurope", "datacenter_coordinates": {"lat": 52.3676, "lng": 4.9041}},
+    {"server": "Standard_NC16ads_A10_v4", "gpu": "NVIDIA A10 (24GB)", "gpu_count": 1, "location": "Amsterdam, Netherlands", "region": "westeurope", "datacenter_coordinates": {"lat": 52.3676, "lng": 4.9041}},
+    {"server": "Standard_NC32ads_A10_v4", "gpu": "NVIDIA A10 (24GB)", "gpu_count": 2, "location": "Amsterdam, Netherlands", "region": "westeurope", "datacenter_coordinates": {"lat": 52.3676, "lng": 4.9041}},
+    {"server": "Standard_NC48ads_A100_v4", "gpu": "NVIDIA A100 (80GB)", "gpu_count": 2, "location": "Amsterdam, Netherlands", "region": "westeurope", "datacenter_coordinates": {"lat": 52.3676, "lng": 4.9041}},
+    {"server": "Standard_NC96ads_A100_v4", "gpu": "NVIDIA A100 (80GB)", "gpu_count": 4, "location": "Amsterdam, Netherlands", "region": "westeurope", "datacenter_coordinates": {"lat": 52.3676, "lng": 4.9041}},
+    {"server": "Standard_NCC40ads_H100_v5", "gpu": "NVIDIA H100 (80GB)", "gpu_count": 1, "location": "Amsterdam, Netherlands", "region": "westeurope", "datacenter_coordinates": {"lat": 52.3676, "lng": 4.9041}},
+    {"server": "Standard_NC80adis_H100_v5", "gpu": "NVIDIA H100 (80GB)", "gpu_count": 2, "location": "Amsterdam, Netherlands", "region": "westeurope", "datacenter_coordinates": {"lat": 52.3676, "lng": 4.9041}},
+    {"server": "Standard_NV6ads_A10_v5", "gpu": "NVIDIA A10 (6GB)", "gpu_count": 1, "location": "Amsterdam, Netherlands", "region": "westeurope", "datacenter_coordinates": {"lat": 52.3676, "lng": 4.9041}},
+    {"server": "Standard_NV12ads_A10_v5", "gpu": "NVIDIA A10 (12GB)", "gpu_count": 1, "location": "Amsterdam, Netherlands", "region": "westeurope", "datacenter_coordinates": {"lat": 52.3676, "lng": 4.9041}},
+    {"server": "Standard_NV18ads_A10_v5", "gpu": "NVIDIA A10 (18GB)", "gpu_count": 1, "location": "Amsterdam, Netherlands", "region": "westeurope", "datacenter_coordinates": {"lat": 52.3676, "lng": 4.9041}},
+    {"server": "Standard_NV36ads_A10_v5", "gpu": "NVIDIA A10 (24GB)", "gpu_count": 1, "location": "Amsterdam, Netherlands", "region": "westeurope", "datacenter_coordinates": {"lat": 52.3676, "lng": 4.9041}},
+    {"server": "Standard_NV4as_v4", "gpu": "AMD Radeon MI25 (4GB)", "gpu_count": 1, "location": "Amsterdam, Netherlands", "region": "westeurope", "datacenter_coordinates": {"lat": 52.3676, "lng": 4.9041}},
+    {"server": "Standard_NV8as_v4", "gpu": "AMD Radeon MI25 (8GB)", "gpu_count": 1, "location": "Amsterdam, Netherlands", "region": "westeurope", "datacenter_coordinates": {"lat": 52.3676, "lng": 4.9041}},
+    {"server": "Standard_NV16as_v4", "gpu": "AMD Radeon MI25 (16GB)", "gpu_count": 1, "location": "Amsterdam, Netherlands", "region": "westeurope", "datacenter_coordinates": {"lat": 52.3676, "lng": 4.9041}},
+    {"server": "Standard_NV32as_v4", "gpu": "AMD Radeon MI25 (32GB)", "gpu_count": 1, "location": "Amsterdam, Netherlands", "region": "westeurope", "datacenter_coordinates": {"lat": 52.3676, "lng": 4.9041}},
+    {"server": "Standard_NV12s_v3", "gpu": "NVIDIA Tesla M60 (8GB)", "gpu_count": 1, "location": "Amsterdam, Netherlands", "region": "westeurope", "datacenter_coordinates": {"lat": 52.3676, "lng": 4.9041}},
+    {"server": "Standard_NV24s_v3", "gpu": "NVIDIA Tesla M60 (16GB)", "gpu_count": 2, "location": "Amsterdam, Netherlands", "region": "westeurope", "datacenter_coordinates": {"lat": 52.3676, "lng": 4.9041}},
+    {"server": "Standard_NV48s_v3", "gpu": "NVIDIA Tesla M60 (32GB)", "gpu_count": 4, "location": "Amsterdam, Netherlands", "region": "westeurope", "datacenter_coordinates": {"lat": 52.3676, "lng": 4.9041}},
+
+    {"server": "Standard_NC6s_v3", "gpu": "NVIDIA Tesla V100 (16GB)", "gpu_count": 1, "location": "London, United Kingdom", "region": "uksouth", "datacenter_coordinates": {"lat": 51.5074, "lng": -0.1278}},
+    {"server": "Standard_NC12s_v3", "gpu": "NVIDIA Tesla V100 (16GB)", "gpu_count": 2, "location": "London, United Kingdom", "region": "uksouth", "datacenter_coordinates": {"lat": 51.5074, "lng": -0.1278}},
+    {"server": "Standard_NC24s_v3", "gpu": "NVIDIA Tesla V100 (16GB)", "gpu_count": 4, "location": "London, United Kingdom", "region": "uksouth", "datacenter_coordinates": {"lat": 51.5074, "lng": -0.1278}},
+    {"server": "Standard_NC24rs_v3", "gpu": "NVIDIA Tesla V100 (16GB)", "gpu_count": 4, "location": "London, United Kingdom", "region": "uksouth", "datacenter_coordinates": {"lat": 51.5074, "lng": -0.1278}},
+    {"server": "Standard_NC4as_T4_v3", "gpu": "NVIDIA Tesla T4 (16GB)", "gpu_count": 1, "location": "London, United Kingdom", "region": "uksouth", "datacenter_coordinates": {"lat": 51.5074, "lng": -0.1278}},
+    {"server": "Standard_NC8as_T4_v3", "gpu": "NVIDIA Tesla T4 (16GB)", "gpu_count": 1, "location": "London, United Kingdom", "region": "uksouth", "datacenter_coordinates": {"lat": 51.5074, "lng": -0.1278}},
+    {"server": "Standard_NC16as_T4_v3", "gpu": "NVIDIA Tesla T4 (16GB)", "gpu_count": 1, "location": "London, United Kingdom", "region": "uksouth", "datacenter_coordinates": {"lat": 51.5074, "lng": -0.1278}},
+    {"server": "Standard_NC64as_T4_v3", "gpu": "NVIDIA Tesla T4 (16GB)", "gpu_count": 4, "location": "London, United Kingdom", "region": "uksouth", "datacenter_coordinates": {"lat": 51.5074, "lng": -0.1278}},
+    {"server": "Standard_NC48ads_A100_v4", "gpu": "NVIDIA A100 (80GB)", "gpu_count": 2, "location": "London, United Kingdom", "region": "uksouth", "datacenter_coordinates": {"lat": 51.5074, "lng": -0.1278}},
+    {"server": "Standard_NC96ads_A100_v4", "gpu": "NVIDIA A100 (80GB)", "gpu_count": 4, "location": "London, United Kingdom", "region": "uksouth", "datacenter_coordinates": {"lat": 51.5074, "lng": -0.1278}},
+    {"server": "Standard_NC80adis_H100_v5", "gpu": "NVIDIA H100 (80GB)", "gpu_count": 2, "location": "London, United Kingdom", "region": "uksouth", "datacenter_coordinates": {"lat": 51.5074, "lng": -0.1278}},
+    {"server": "Standard_NV6ads_A10_v5", "gpu": "NVIDIA A10 (6GB)", "gpu_count": 1, "location": "London, United Kingdom", "region": "uksouth", "datacenter_coordinates": {"lat": 51.5074, "lng": -0.1278}},
+    {"server": "Standard_NV12ads_A10_v5", "gpu": "NVIDIA A10 (12GB)", "gpu_count": 1, "location": "London, United Kingdom", "region": "uksouth", "datacenter_coordinates": {"lat": 51.5074, "lng": -0.1278}},
+    {"server": "Standard_NV18ads_A10_v5", "gpu": "NVIDIA A10 (18GB)", "gpu_count": 1, "location": "London, United Kingdom", "region": "uksouth", "datacenter_coordinates": {"lat": 51.5074, "lng": -0.1278}},
+    {"server": "Standard_NV36ads_A10_v5", "gpu": "NVIDIA A10 (24GB)", "gpu_count": 1, "location": "London, United Kingdom", "region": "uksouth", "datacenter_coordinates": {"lat": 51.5074, "lng": -0.1278}},
+    {"server": "Standard_NV4as_v4", "gpu": "AMD Radeon MI25 (4GB)", "gpu_count": 1, "location": "London, United Kingdom", "region": "uksouth", "datacenter_coordinates": {"lat": 51.5074, "lng": -0.1278}},
+    {"server": "Standard_NV8as_v4", "gpu": "AMD Radeon MI25 (8GB)", "gpu_count": 1, "location": "London, United Kingdom", "region": "uksouth", "datacenter_coordinates": {"lat": 51.5074, "lng": -0.1278}},
+    {"server": "Standard_NV16as_v4", "gpu": "AMD Radeon MI25 (16GB)", "gpu_count": 1, "location": "London, United Kingdom", "region": "uksouth", "datacenter_coordinates": {"lat": 51.5074, "lng": -0.1278}},
+    {"server": "Standard_NV32as_v4", "gpu": "AMD Radeon MI25 (32GB)", "gpu_count": 1, "location": "London, United Kingdom", "region": "uksouth", "datacenter_coordinates": {"lat": 51.5074, "lng": -0.1278}},
+    {"server": "Standard_NV12s_v3", "gpu": "NVIDIA Tesla M60 (8GB)", "gpu_count": 1, "location": "London, United Kingdom", "region": "uksouth", "datacenter_coordinates": {"lat": 51.5074, "lng": -0.1278}},
+    {"server": "Standard_NV24s_v3", "gpu": "NVIDIA Tesla M60 (16GB)", "gpu_count": 2, "location": "London, United Kingdom", "region": "uksouth", "datacenter_coordinates": {"lat": 51.5074, "lng": -0.1278}},
+    {"server": "Standard_NV48s_v3", "gpu": "NVIDIA Tesla M60 (32GB)", "gpu_count": 4, "location": "London, United Kingdom", "region": "uksouth", "datacenter_coordinates": {"lat": 51.5074, "lng": -0.1278}}
+  ]
 }
