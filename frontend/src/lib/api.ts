@@ -153,6 +153,32 @@ export interface TimeShiftPlan {
   meets_deadline: boolean
 }
 
+// Live region summary (for dashboard)
+export interface RegionSummary {
+  region_id: string
+  region_name: string
+  location: string
+  carbon_gco2_kwh: number
+  carbon_index: string
+  carbon_source: string
+  temperature_c: number
+  wind_kmh: number
+  gpu_count: number
+  cheapest_gpu_name: string
+  cheapest_spot_price: number
+  cheapest_ondemand_price: number
+  cheapest_savings_pct: number
+  cheapest_sku: string
+}
+
+// Live price curve
+export interface PriceCurve {
+  region_id: string
+  gpu_name: string
+  sku: string
+  data: { hour: string; spot: number; ondemand: number }[]
+}
+
 // API calls
 export const api = {
   getRegion: (id: string) => request<RegionInfo>(`/region?region_id=${id}`),
@@ -164,5 +190,7 @@ export const api = {
   timeshiftPlan: (body: Record<string, unknown>) =>
     request<TimeShiftPlan>('/timeshifting/plan', { method: 'POST', body: JSON.stringify(body) }),
   dashboardStats: () => request<DashboardStats>('/dashboard/stats'),
+  regionsSummary: () => request<RegionSummary[]>('/regions/summary'),
+  priceCurve: (regionId: string) => request<PriceCurve>(`/prices/curve?region_id=${regionId}`),
   health: () => request<{ status: string; engine: string }>('/health'),
 }
